@@ -9,23 +9,97 @@ export interface Station {
     subscription_type: string;
 }
 
-export async function fetchStations(): Promise<Station[]> {
-    const baseUrl = import.meta.env.API_BASE_URL;
+export interface StationsResponse {
+    token: string;
+    stations: Station[];
+}
+
+let activeToken: string | null = null;
+
+export async function fetchToken(): Promise<string | null> {
+    const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+    const clientSecret = import.meta.env.PUBLIC_CLIENT_SECRET;
     
     try {
-        // Since API_BASE_URL might end in a slash or not, we handle it safely
-        const url = `${baseUrl.replace(/\/$/, '')}/api/stations`;
+        const url = `${baseUrl.replace(/\/$/, '')}/api/token`;
+        const res = await fetch(url, {
+            headers: {
+                'X-Client-Secret': clientSecret
+            }
+        });
         
-        const res = await fetch(url);
         if (!res.ok) {
-            console.error(`Failed to fetch stations: ${res.statusText}`);
-            return [];
+            console.error(`Failed to fetch token: ${res.statusText}`);
+            return null;
         }
         
-        const data: Station[] = await res.json();
-        return data;
+        const data = await res.json();
+        activeToken = data.token;
+        return data.token;
+    } catch (error) {
+        console.error("Error fetching token:", error);
+        return null;
+    }
+}
+
+export async function fetchStations(limit: number = 20, offset: number = 0): Promise<StationsResponse | null> {
+    const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+    
+    // Always ensure we have a token
+    const token = await fetchToken();
+    if (!token) return null;
+    
+    // If limit is 0, we just wanted to refresh the token
+    if (limit === 0) {
+        return { token, stations: [] };
+    }
+    
+    try {
+        const url = `${baseUrl.replace(/\/$/, '')}/api/stations?limit=${limit}&offset=${offset}`;
+        
+        const res = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!res.ok) {
+            console.error(`Failed to fetch stations: ${res.statusText}`);
+            return null;
+        }
+        
+        const stations: Station[] = await res.json();
+        return {
+            token,
+            stations
+        };
     } catch (error) {
         console.error("Error fetching stations:", error);
-        return []; // Return empty array on failure so UI doesn't crash
+        return null;
+    }
+}
+
+export async function fetchStationById(id: string, token: string): Promise<Station | null> {
+    const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+    
+    try {
+        const url = `${baseUrl.replace(/\/$/, '')}/api/stations/${id}`;
+        
+        const res = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!res.ok) {
+            console.error(`Failed to fetch station ${id}: ${res.statusText}`);
+            return null;
+        }
+        
+        const data: Station = await res.json();
+        return data;
+    } catch (error) {
+        console.error(`Error fetching station ${id}:`, error);
+        return null;
     }
 }
