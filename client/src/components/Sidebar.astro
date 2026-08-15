@@ -30,7 +30,7 @@ const hasStations = stations.length > 0;
                 <div id="empty-state-container" class="flex flex-col items-center justify-center text-center p-8 bg-slate-50 dark:bg-zinc-900 border border-slate-200/50 dark:border-zinc-800/50">
                     <Radio class="w-16 h-16 text-slate-300 dark:text-zinc-700 mb-4 animate-pulse" />
                     <h3 class="font-bold text-slate-900 dark:text-zinc-100 text-lg">No Station Selected</h3>
-                    <p class="text-sm text-slate-500 dark:text-zinc-400 mt-2">Pick a station from to start listening</p>
+                    <p class="text-sm text-slate-500 dark:text-zinc-400 mt-2">Pick a station from the list to start listening</p>
                 </div>
 
                 <!-- Player Container (Hidden by default) -->
@@ -61,7 +61,7 @@ const hasStations = stations.length > 0;
                             </audio>
                             <div class="flex items-center justify-center mb-4">
                                 <div class="flex items-center gap-6">
-                                    <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
+                                    <button id="btn-prev" class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
                                         <SkipBack class="w-4 h-4" />
                                     </button>
                                     <button id="play-pause-btn" class="flex items-center justify-center w-14 h-14 rounded-none bg-primary text-white shadow-lg shadow-primary/30 transform transition-transform active:scale-95 hover:bg-primary/90 relative">
@@ -69,21 +69,34 @@ const hasStations = stations.length > 0;
                                         <Pause id="pause-icon" class="w-6 h-6 hidden absolute" />
                                         <Loader2 id="loading-icon" class="w-6 h-6 hidden animate-spin absolute" />
                                     </button>
-                                    <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
+                                    <button id="btn-next" class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
                                         <SkipForward class="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
                             
-                            <!-- Progress bar (fake for radio, just visualization) -->
-                            <div class="flex items-center gap-2">
+                            <!-- Audio Visualizer (Equalizer) -->
+                            <div class="flex items-center gap-3">
                                 <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400">LIVE</span>
-                                <div class="w-full h-1.5 bg-slate-200 dark:bg-zinc-800 relative overflow-hidden rounded-none">
-                                    <div class="absolute top-0 left-0 h-full w-full bg-primary"></div>
+                                
+                                <!-- Audio Visualizer (Sine Wave) -->
+                                <div id="audio-visualizer" class="flex-1 flex items-center justify-center h-6 opacity-30 transition-opacity duration-300 px-2 overflow-hidden relative">
+                                    <svg class="w-full h-full text-primary" viewBox="0 0 200 40" preserveAspectRatio="none">
+                                        <g class="wave-group">
+                                            <!-- High amplitude wave -->
+                                            <path class="wave wave-1" d="M 0 20 Q 25 0, 50 20 T 100 20 T 150 20 T 200 20 T 250 20 T 300 20 T 350 20 T 400 20" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke" />
+                                            <!-- Medium amplitude wave -->
+                                            <path class="wave wave-2" d="M 0 20 Q 25 8, 50 20 T 100 20 T 150 20 T 200 20 T 250 20 T 300 20 T 350 20 T 400 20" fill="none" stroke="currentColor" stroke-width="2" opacity="0.6" vector-effect="non-scaling-stroke" />
+                                            <!-- Low amplitude wave -->
+                                            <path class="wave wave-3" d="M 0 20 Q 25 15, 50 20 T 100 20 T 150 20 T 200 20 T 250 20 T 300 20 T 350 20 T 400 20" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3" vector-effect="non-scaling-stroke" />
+                                        </g>
+                                    </svg>
                                 </div>
+
+                                <!-- Live Indicator -->
                                 <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400 relative flex h-2 w-2">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-none bg-error opacity-75"></span>
-                                <span class="relative inline-flex rounded-none h-2 w-2 bg-error"></span>
+                                    <span id="live-indicator-ping" class="absolute inline-flex h-full w-full rounded-none bg-error opacity-75 hidden"></span>
+                                    <span id="live-indicator-dot" class="relative inline-flex rounded-none h-2 w-2 bg-slate-300 dark:bg-zinc-700 transition-colors"></span>
                                 </span>
                             </div>
                         </div>
@@ -126,12 +139,26 @@ const hasStations = stations.length > 0;
     import { fetchStationById } from '../hooks/useStations';
 
     const btn = document.getElementById('play-pause-btn');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
     const audio = document.getElementById('main-audio-player') as HTMLAudioElement;
     
     const playIcon = document.getElementById('play-icon');
     const pauseIcon = document.getElementById('pause-icon');
     const loadIcon = document.getElementById('loading-icon');
     const errorOverlay = document.getElementById('player-error-overlay');
+
+    if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('request-play-prev'));
+        });
+    }
+
+    if (btnNext) {
+        btnNext.addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('request-play-next'));
+        });
+    }
 
     if(btn && audio) {
         // Toggle play/pause on click
@@ -149,12 +176,14 @@ const hasStations = stations.length > 0;
             if (pauseIcon) pauseIcon.classList.add('hidden');
             if (loadIcon) loadIcon.classList.remove('hidden');
             if (errorOverlay) errorOverlay.classList.remove('opacity-100');
+            setVisualizerActive(false);
         });
 
         audio.addEventListener('waiting', () => {
             if (playIcon) playIcon.classList.add('hidden');
             if (pauseIcon) pauseIcon.classList.add('hidden');
             if (loadIcon) loadIcon.classList.remove('hidden');
+            setVisualizerActive(false);
         });
 
         audio.addEventListener('playing', () => {
@@ -162,12 +191,14 @@ const hasStations = stations.length > 0;
             if (loadIcon) loadIcon.classList.add('hidden');
             if (pauseIcon) pauseIcon.classList.remove('hidden');
             if (errorOverlay) errorOverlay.classList.remove('opacity-100');
+            setVisualizerActive(true);
         });
 
         audio.addEventListener('pause', () => {
             if (pauseIcon) pauseIcon.classList.add('hidden');
             if (loadIcon) loadIcon.classList.add('hidden');
             if (playIcon) playIcon.classList.remove('hidden');
+            setVisualizerActive(false);
         });
 
         audio.addEventListener('error', () => {
@@ -177,7 +208,28 @@ const hasStations = stations.length > 0;
             if (playIcon) playIcon.classList.remove('hidden');
             // Show error overlay
             if (errorOverlay) errorOverlay.classList.add('opacity-100');
+            setVisualizerActive(false);
         });
+    }
+
+    function setVisualizerActive(active: boolean) {
+        const visualizer = document.getElementById('audio-visualizer');
+        const livePing = document.getElementById('live-indicator-ping');
+        const liveDot = document.getElementById('live-indicator-dot');
+
+        if (active) {
+            visualizer?.classList.add('playing');
+            visualizer?.classList.replace('opacity-30', 'opacity-100');
+            livePing?.classList.remove('hidden');
+            liveDot?.classList.remove('bg-slate-300', 'dark:bg-zinc-700');
+            liveDot?.classList.add('bg-error');
+        } else {
+            visualizer?.classList.remove('playing');
+            visualizer?.classList.replace('opacity-100', 'opacity-30');
+            livePing?.classList.add('hidden');
+            liveDot?.classList.remove('bg-error');
+            liveDot?.classList.add('bg-slate-300', 'dark:bg-zinc-700');
+        }
     }
 
     // Listen for cross-component play-station events
@@ -206,6 +258,7 @@ const hasStations = stations.length > 0;
         if (playIcon) playIcon.classList.add('hidden');
         if (pauseIcon) pauseIcon.classList.add('hidden');
         if (loadIcon) loadIcon.classList.remove('hidden');
+        setVisualizerActive(false);
         
         try {
             const gridEl = document.getElementById('radio-grid');
@@ -228,3 +281,16 @@ const hasStations = stations.length > 0;
         }
     });
 </script>
+
+<style>
+    @keyframes scroll-wave {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100px); }
+    }
+    .playing .wave {
+        animation: scroll-wave linear infinite;
+    }
+    .playing .wave-1 { animation-duration: 1.2s; }
+    .playing .wave-2 { animation-duration: 1.8s; }
+    .playing .wave-3 { animation-duration: 2.4s; }
+</style>
