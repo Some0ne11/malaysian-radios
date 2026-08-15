@@ -11,18 +11,24 @@ import (
 
 // GetStationsHandler fetches stations from the DB and returns them as JSON
 func GetStationsHandler(w http.ResponseWriter, r *http.Request) {
-	// Pagination
-	limit := 20
-	offset := 0
-	if l := r.URL.Query().Get("limit"); l != "" {
-		if parsedLimit, err := strconv.Atoi(l); err == nil && parsedLimit > 0 {
-			limit = parsedLimit
-		}
+	l := r.URL.Query().Get("limit")
+	o := r.URL.Query().Get("offset")
+
+	if l == "" || o == "" {
+		http.Error(w, "Missing required query parameters", http.StatusBadRequest)
+		return
 	}
-	if o := r.URL.Query().Get("offset"); o != "" {
-		if parsedOffset, err := strconv.Atoi(o); err == nil && parsedOffset >= 0 {
-			offset = parsedOffset
-		}
+
+	limit, err := strconv.Atoi(l)
+	if err != nil || limit < 0 {
+		http.Error(w, "Invalid 'limit' parameter", http.StatusBadRequest)
+		return
+	}
+
+	offset, err := strconv.Atoi(o)
+	if err != nil || offset < 0 {
+		http.Error(w, "Invalid 'offset' parameter", http.StatusBadRequest)
+		return
 	}
 
 	stations, err := database.GetStations(limit, offset)
