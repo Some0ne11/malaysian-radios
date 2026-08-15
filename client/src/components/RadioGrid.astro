@@ -1,0 +1,62 @@
+---
+import RadioCard from './RadioCard.astro';
+
+// Dummy data for now, eventually fetched from Turso via Golang backend
+const stations = [
+    { id: '1', name: 'ERA FM', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/07/Era_FM_Logo_2018.png/220px-Era_FM_Logo_2018.png' },
+    { id: '2', name: 'SINAR FM', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/6/6d/Sinar_FM_Logo_2018.png/220px-Sinar_FM_Logo_2018.png' },
+    { id: '3', name: 'MY FM', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/MY_FM_Logo_2018.png/220px-MY_FM_Logo_2018.png' },
+    { id: '4', name: 'HITZ FM', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/7f/Hitz_FM_Logo_2018.png/220px-Hitz_FM_Logo_2018.png' },
+    { id: '5', name: 'MIX FM', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Mix_FM_Logo_2018.png/220px-Mix_FM_Logo_2018.png' },
+    { id: '6', name: 'LITE FM', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/87/Lite_FM_Logo_2018.png/220px-Lite_FM_Logo_2018.png' },
+    { id: '7', name: 'MELODY FM', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Melody_FM_Logo_2018.png/220px-Melody_FM_Logo_2018.png' },
+    { id: '8', name: 'GEGAR', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/0d/Gegar_Logo_2018.png/220px-Gegar_Logo_2018.png' },
+    { id: '9', name: 'ZAYAN', category: 'RADIO', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/82/Zayan_Logo_2018.png/220px-Zayan_Logo_2018.png' },
+];
+---
+
+<div class="flex-1 p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+    <div class="flex justify-between items-end mb-6">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 dark:text-zinc-100 tracking-tight">Discover</h1>
+            <p class="text-slate-500 dark:text-zinc-400 mt-1">Listen to your favorite Malaysian radio stations</p>
+        </div>
+        
+        <div class="hidden sm:block">
+            <div class="flex border border-slate-200 dark:border-zinc-800 rounded-none overflow-hidden">
+                <button class="px-3 py-1 text-sm font-semibold bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors border-r border-slate-200 dark:border-zinc-800">All</button>
+                <button class="px-3 py-1 text-sm font-semibold bg-primary text-white transition-colors border-r border-slate-200 dark:border-zinc-800">FM</button>
+                <button class="px-3 py-1 text-sm font-semibold bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors">Digital</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-20 lg:pb-0">
+        {stations.map(station => (
+            <RadioCard 
+                id={station.id}
+                name={station.name}
+                category={station.category}
+                logo_url={station.logo_url}
+            />
+        ))}
+    </div>
+</div>
+
+<style>
+    /* Custom thin scrollbar for a premium feel */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: oklch(var(--bc) / 0.2);
+        border-radius: 20px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: oklch(var(--p) / 0.5);
+    }
+</style>
