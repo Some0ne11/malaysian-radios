@@ -32,14 +32,19 @@ const stations = await fetchStations();
     <!-- Scrollable Grid Section -->
     <div class="flex-1 overflow-y-auto hide-scrollbar p-6 lg:p-8">
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-20 lg:pb-0">
-        {stations.map(station => (
+        {stations.length > 0 ? stations.map(station => (
             <RadioCard 
                 id={station.id}
                 name={station.name}
-                category={station.category}
-                logo_url={station.logo_url}
+                category={station.category_id || 'UNKNOWN'}
+                logo_url={station.logo_url || ''}
+                stream_url={station.stream_url}
             />
-        ))}
+        )) : (
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-500 dark:text-zinc-500">
+                <p>No radio stations available at the moment.</p>
+            </div>
+        )}
         </div>
     </div>
 </div>

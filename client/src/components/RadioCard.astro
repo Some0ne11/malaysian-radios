@@ -6,12 +6,19 @@ export interface Props {
     name: string;
     category: string;
     logo_url: string;
+    stream_url: string;
 }
 
-const { id, name, category, logo_url } = Astro.props;
+const { id, name, category, logo_url, stream_url } = Astro.props;
 ---
 
-<button class="w-full block relative rounded-none bg-white dark:bg-zinc-900 shadow-sm border border-slate-200 dark:border-zinc-800 hover:shadow-md hover:border-primary/50 transition-all duration-300 group overflow-hidden text-center h-full active:scale-95 flex flex-col items-center">
+<button class="radio-card-btn w-full block relative rounded-none bg-white dark:bg-zinc-900 shadow-sm border border-slate-200 dark:border-zinc-800 hover:shadow-md hover:border-primary/50 transition-all duration-300 group overflow-hidden text-center h-full active:scale-95 flex flex-col items-center"
+    data-id={id}
+    data-name={name}
+    data-category={category}
+    data-logo={logo_url}
+    data-stream={stream_url}
+>
     <!-- Logo -->
     <div class="w-full aspect-square bg-slate-100 dark:bg-zinc-800 overflow-hidden relative">
         <img src={logo_url} alt={name} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -30,3 +37,21 @@ const { id, name, category, logo_url } = Astro.props;
         <p class="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-semibold mt-1">{category}</p>
     </div>
 </button>
+
+<script>
+    document.querySelectorAll('.radio-card-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const el = e.currentTarget as HTMLButtonElement;
+            const event = new CustomEvent('play-station', {
+                detail: {
+                    id: el.dataset.id,
+                    name: el.dataset.name,
+                    category: el.dataset.category,
+                    logo: el.dataset.logo,
+                    stream: el.dataset.stream
+                }
+            });
+            window.dispatchEvent(event);
+        });
+    });
+</script>
