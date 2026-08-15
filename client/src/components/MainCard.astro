@@ -8,3 +8,21 @@ import RadioGrid from './RadioGrid.astro';
     <Sidebar />
     <RadioGrid />
 </div>
+
+<script>
+    // Handle mobile drawer open/close
+    const openBtn = document.getElementById('open-grid-btn');
+    const closeBtn = document.getElementById('close-grid-btn');
+    const grid = document.getElementById('radio-grid');
+
+    if(openBtn && closeBtn && grid) {
+        openBtn.addEventListener('click', () => {
+            grid.classList.remove('translate-y-full');
+            grid.classList.add('translate-y-0');
+        });
+        closeBtn.addEventListener('click', () => {
+            grid.classList.add('translate-y-full');
+            grid.classList.remove('translate-y-0');
+        });
+    }
+</script>
