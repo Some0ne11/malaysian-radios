@@ -83,7 +83,7 @@ export async function fetchStationById(id: string, token: string): Promise<Stati
     const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
     
     try {
-        const url = `${baseUrl.replace(/\/$/, '')}/api/stations/${id}`;
+        const url = `${baseUrl.replace(/\/$/, '')}/api/stations/${id}`; // or /api/stations/${id}?token={token}
         
         const res = await fetch(url, {
             headers: {
