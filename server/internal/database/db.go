@@ -43,14 +43,16 @@ func Connect(dbUrl, authToken string) error {
 	return nil
 }
 
-// GetAllStations fetches all radio stations from the database
-func GetAllStations() ([]Station, error) {
+// GetStations fetches a paginated list of radio stations from the database
+func GetStations(limit, offset int) ([]Station, error) {
 	if DB == nil {
 		return nil, fmt.Errorf("database connection is not initialized")
 	}
 
-	query := `SELECT id, name, category_id, stream_url, logo_url, status, clear_keys, subscription_type FROM stations`
-	rows, err := DB.Query(query)
+	query := `SELECT id, name, category_id, stream_url, logo_url, status, clear_keys, subscription_type 
+			  FROM stations 
+			  LIMIT ? OFFSET ?`
+	rows, err := DB.Query(query, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -80,10 +82,41 @@ func GetAllStations() ([]Station, error) {
 		return nil, err
 	}
 
-	// Ensure we return an empty array instead of null in JSON if no stations exist
 	if stations == nil {
 		stations = []Station{}
 	}
 
 	return stations, nil
+}
+
+// GetStationByID fetches a single radio station by its ID
+func GetStationByID(id string) (*Station, error) {
+	if DB == nil {
+		return nil, fmt.Errorf("database connection is not initialized")
+	}
+
+	query := `SELECT id, name, category_id, stream_url, logo_url, status, clear_keys, subscription_type 
+			  FROM stations 
+			  WHERE id = ?`
+	row := DB.QueryRow(query, id)
+
+	var s Station
+	err := row.Scan(
+		&s.ID,
+		&s.Name,
+		&s.CategoryID,
+		&s.StreamURL,
+		&s.LogoURL,
+		&s.Status,
+		&s.ClearKeys,
+		&s.SubscriptionType,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil // Not found
+		}
+		return nil, err
+	}
+
+	return &s, nil
 }
