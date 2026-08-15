@@ -135,3 +135,15 @@ pnpm install
 pnpm dev
 # Client runs on http://localhost:4321
 ```
+
+---
+
+## ⚖️ Legal & DMCA Notice
+
+This repository contains **no copyrighted audio, streams, or media files**. It is solely an open-source software project consisting of a database schema, API routing logic, and a frontend interface designed to play external, user-provided URLs.
+
+- **No Streams Hosted:** All radio streams played through this application are publicly available on the internet and are strictly fetched directly from the respective broadcasters' public servers via the client's browser.
+- **No Links Provided:** This repository does not contain any hardcoded streaming links, M3U playlists, or proprietary broadcast URLs. Users must supply their own database entries and URLs.
+- **Fair Use:** This application functions purely as a web-based audio player and directory interface, acting essentially as a specialized web browser. 
+
+If you are a copyright owner and believe that a live deployment of this software is infringing on your rights, please note that the developers of this open-source repository have no control over third-party deployments or the data users choose to insert into their own independent databases.
