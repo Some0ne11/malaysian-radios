@@ -1,8 +1,19 @@
 ---
-import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp } from '@lucide/astro';
+import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp, Sun, Moon } from '@lucide/astro';
 ---
-<div class="flex flex-col w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-zinc-800 p-8 bg-slate-100/90 dark:bg-zinc-900/90">
-    <div class="mb-6">
+<div class="flex flex-col w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-zinc-800 p-6 lg:p-8 bg-slate-100/90 dark:bg-zinc-900/90 h-full">
+    <div class="mb-6 relative">
+        <div class="absolute top-0 right-0 -mt-2 -mr-2">
+            <!-- Theme Toggle -->
+            <label class="cursor-pointer flex items-center justify-center p-2 text-slate-500 hover:text-primary dark:text-zinc-400 dark:hover:text-primary transition-colors">
+                <input type="checkbox" id="theme-toggle" class="peer sr-only" />
+                <!-- sun icon (shown when checked, meaning light mode) -->
+                <Sun class="w-5 h-5 hidden peer-checked:block" />
+                <!-- moon icon (shown when unchecked, meaning dark mode) -->
+                <Moon class="w-5 h-5 block peer-checked:hidden" />
+            </label>
+        </div>
+        
         <h2 class="text-xs font-bold tracking-widest text-slate-500 dark:text-zinc-400 uppercase mb-4 flex items-center gap-2">
             <span class="w-2 h-2 rounded-none bg-error animate-pulse"></span>
             Now Playing
@@ -63,7 +74,7 @@ import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp } from '@lu
     </div>
 
     <!-- Social Links & Mobile Drawer Toggle -->
-    <div class="mt-8 flex flex-col items-center gap-6">
+    <div class="mt-6 lg:mt-8 flex flex-col items-center gap-4 lg:gap-6 mt-auto lg:mt-8">
         <div class="flex justify-center gap-4">
             <!-- SVG icons for social to not overload lucide -->
             <a href="#" class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">

@@ -4,7 +4,7 @@ import RadioGrid from './RadioGrid.astro';
 ---
 
 <!-- The big container card that holds the whole UI -->
-<div class="w-full max-w-[1400px] h-[90vh] max-h-[900px] backdrop-blur-2xl shadow-2xl rounded-none border border-slate-200/50 dark:border-zinc-800/50 flex flex-col lg:flex-row overflow-hidden relative z-0 ring-1 ring-slate-900/5 dark:ring-white/5 bg-transparent">
+<div class="w-full max-w-full lg:max-w-[1400px] mx-auto h-screen lg:h-[90vh] max-h-none lg:max-h-[900px] backdrop-blur-2xl shadow-none lg:shadow-2xl rounded-none border-0 lg:border border-slate-200/50 dark:border-zinc-800/50 flex flex-col lg:flex-row overflow-hidden relative z-0 ring-0 lg:ring-1 ring-slate-900/5 dark:ring-white/5 bg-transparent">
     <Sidebar />
     <RadioGrid />
 </div>
@@ -17,11 +17,11 @@ import RadioGrid from './RadioGrid.astro';
 
     if(openBtn && closeBtn && grid) {
         openBtn.addEventListener('click', () => {
-            grid.classList.remove('translate-y-full');
+            grid.classList.remove('max-lg:translate-y-full');
             grid.classList.add('translate-y-0');
         });
         closeBtn.addEventListener('click', () => {
-            grid.classList.add('translate-y-full');
+            grid.classList.add('max-lg:translate-y-full');
             grid.classList.remove('translate-y-0');
         });
     }

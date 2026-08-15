@@ -15,47 +15,27 @@ const { title = "Radio Malaysia" } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body class="min-h-screen bg-slate-200 dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-300">
-		<header class="w-full p-4 flex justify-end items-center absolute top-0 z-10">
-			<!-- Theme Toggle -->
-			<label class="cursor-pointer flex items-center justify-center p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
-			  <input type="checkbox" id="theme-toggle" class="peer sr-only" />
-			  
-			  <!-- sun icon (shown when checked, meaning light mode) -->
-			  <Sun class="w-6 h-6 hidden peer-checked:block" />
-			  
-			  <!-- moon icon (shown when unchecked, meaning dark mode) -->
-			  <Moon class="w-6 h-6 block peer-checked:hidden" />
-			  
-			</label>
-		</header>
 		
-		<main class="flex-1 flex items-center justify-center p-4 lg:p-8 relative">
-            <!-- Decorative background elements -->
-            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-none blur-3xl -z-10 animate-pulse"></div>
-            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-none blur-3xl -z-10 animate-pulse" style="animation-delay: 2s;"></div>
-            
-			<slot />
-		</main>
+		<slot />
 
-        <script>
-            const themeToggle = document.getElementById('theme-toggle') as HTMLInputElement;
-            if (themeToggle) {
-                // Check initial state
-                if (document.documentElement.classList.contains('dark')) {
-                    themeToggle.checked = false;
-                } else {
-                    themeToggle.checked = true;
-                }
-
-                themeToggle.addEventListener('change', (e) => {
-                    const isLight = (e.target as HTMLInputElement).checked;
-                    if (isLight) {
-                        document.documentElement.classList.remove('dark');
-                    } else {
-                        document.documentElement.classList.add('dark');
-                    }
-                });
+    <script>
+        const themeToggle = document.getElementById('theme-toggle') as HTMLInputElement;
+        if (themeToggle) {
+            // Check initial state
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggle.checked = false;
+            } else {
+                themeToggle.checked = true;
             }
-        </script>
+            themeToggle.addEventListener('change', (e) => {
+                const isLight = (e.target as HTMLInputElement).checked;
+                if (isLight) {
+                    document.documentElement.classList.remove('dark');
+                } else {
+                    document.documentElement.classList.add('dark');
+                }
+            });
+        }
+    </script>
 	</body>
 </html>
