@@ -5,7 +5,6 @@ import { fetchStations } from '../hooks/useStations';
 const response = await fetchStations(20, 0);
 const stations = response ? response.stations : [];
 const hasStations = stations.length > 0;
-const defaultStation = hasStations ? stations[0] : null;
 ---
 <div class="flex flex-col w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-zinc-800 p-6 lg:p-8 bg-slate-100/90 dark:bg-zinc-900/90 h-full">
     <!-- Sidebar Header / Navbar -->
@@ -25,65 +24,68 @@ const defaultStation = hasStations ? stations[0] : null;
 
     <!-- Centered Content Wrapper -->
     <div class="flex-1 flex flex-col justify-center">
-        {hasStations && defaultStation ? (
+        {hasStations ? (
             <>
-                <div class="mb-4 relative">
-                <!-- Logo Area -->
-                <div class="aspect-square w-full bg-slate-200 dark:bg-zinc-800 rounded-none flex items-center justify-center shadow-inner overflow-hidden relative group">
-                    <img id="now-playing-logo" src={defaultStation.logo_url} alt="Radio Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <!-- Error Overlay -->
-                    <div id="player-error-overlay" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white opacity-0 pointer-events-none transition-opacity duration-300 z-10">
-                        <AlertCircle class="w-12 h-12 text-error mb-2 animate-pulse" />
-                        <span class="text-sm font-bold tracking-wider uppercase text-error">Stream Error</span>
-                    </div>
-                </div>
+                <!-- Empty State Container (Visible by default) -->
+                <div id="empty-state-container" class="flex flex-col items-center justify-center text-center p-8 bg-slate-50 dark:bg-zinc-900 border border-slate-200/50 dark:border-zinc-800/50">
+                    <Radio class="w-16 h-16 text-slate-300 dark:text-zinc-700 mb-4 animate-pulse" />
+                    <h3 class="font-bold text-slate-900 dark:text-zinc-100 text-lg">No Station Selected</h3>
+                    <p class="text-sm text-slate-500 dark:text-zinc-400 mt-2">Pick a station from to start listening</p>
                 </div>
 
-                <!-- Station Info -->
-                <div class="mb-4 text-center">
-                    <h3 id="now-playing-title" class="font-bold text-2xl text-slate-900 dark:text-zinc-100 truncate">{defaultStation.name}</h3>
-                    <p id="now-playing-category" class="text-xs text-slate-500 dark:text-zinc-400 uppercase font-semibold tracking-widest mt-1">{defaultStation.category_id}</p>
-                </div>
-
-                <!-- Playback Controls -->
-                <div class="flex flex-col mt-2">
-                    <div class="bg-slate-50 dark:bg-zinc-900 rounded-none p-6 shadow-sm border border-slate-200/50 dark:border-zinc-800/50">
-                        <audio id="main-audio-player" class="hidden" preload="none" controls>
-                            <source src={defaultStation.stream_url}>
-                        </audio>
-                        
-                        <div class="flex items-center justify-between mb-4">
-                            <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
-                                <Heart class="w-4 h-4" />
-                            </button>
-                            <div class="flex items-center gap-4">
-                                <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
-                                    <SkipBack class="w-4 h-4" />
-                                </button>
-                                <button id="play-pause-btn" class="flex items-center justify-center w-14 h-14 rounded-none bg-primary text-white shadow-lg shadow-primary/30 transform transition-transform active:scale-95 hover:bg-primary/90 relative">
-                                    <Play id="play-icon" class="w-6 h-6 ml-1 absolute" />
-                                    <Pause id="pause-icon" class="w-6 h-6 hidden absolute" />
-                                    <Loader2 id="loading-icon" class="w-6 h-6 hidden animate-spin absolute" />
-                                </button>
-                                <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
-                                    <SkipForward class="w-4 h-4" />
-                                </button>
+                <!-- Player Container (Hidden by default) -->
+                <div id="player-container" class="hidden flex-col w-full">
+                    <div class="mb-4 relative">
+                        <!-- Logo Area -->
+                        <div class="aspect-square w-full bg-slate-200 dark:bg-zinc-800 rounded-none flex items-center justify-center shadow-inner overflow-hidden relative group">
+                            <img id="now-playing-logo" src="" alt="Radio Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <!-- Error Overlay -->
+                            <div id="player-error-overlay" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white opacity-0 pointer-events-none transition-opacity duration-300 z-10">
+                                <AlertCircle class="w-12 h-12 text-error mb-2 animate-pulse" />
+                                <span class="text-sm font-bold tracking-wider uppercase text-error">Stream Error</span>
                             </div>
-                            <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
-                                <Radio class="w-4 h-4" />
-                            </button>
                         </div>
-                        
-                        <!-- Progress bar (fake for radio, just visualization) -->
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400">LIVE</span>
-                            <div class="w-full h-1.5 bg-slate-200 dark:bg-zinc-800 relative overflow-hidden rounded-none">
-                                <div class="absolute top-0 left-0 h-full w-full bg-primary"></div>
+                    </div>
+
+                    <!-- Station Info -->
+                    <div class="mb-4 text-center">
+                        <h3 id="now-playing-title" class="font-bold text-2xl text-slate-900 dark:text-zinc-100 truncate">Title</h3>
+                        <p id="now-playing-category" class="text-xs text-slate-500 dark:text-zinc-400 uppercase font-semibold tracking-widest mt-1">Category</p>
+                    </div>
+
+                    <!-- Playback Controls -->
+                    <div class="flex flex-col mt-2">
+                        <div class="bg-slate-50 dark:bg-zinc-900 rounded-none p-6 shadow-sm border border-slate-200/50 dark:border-zinc-800/50">
+                            <audio id="main-audio-player" class="hidden" preload="none" controls>
+                                <source src="">
+                            </audio>
+                            <div class="flex items-center justify-center mb-4">
+                                <div class="flex items-center gap-6">
+                                    <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
+                                        <SkipBack class="w-4 h-4" />
+                                    </button>
+                                    <button id="play-pause-btn" class="flex items-center justify-center w-14 h-14 rounded-none bg-primary text-white shadow-lg shadow-primary/30 transform transition-transform active:scale-95 hover:bg-primary/90 relative">
+                                        <Play id="play-icon" class="w-6 h-6 ml-1 absolute" />
+                                        <Pause id="pause-icon" class="w-6 h-6 hidden absolute" />
+                                        <Loader2 id="loading-icon" class="w-6 h-6 hidden animate-spin absolute" />
+                                    </button>
+                                    <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
+                                        <SkipForward class="w-4 h-4" />
+                                    </button>
+                                </div>
                             </div>
-                            <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400 relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-none bg-error opacity-75"></span>
-                            <span class="relative inline-flex rounded-none h-2 w-2 bg-error"></span>
-                            </span>
+                            
+                            <!-- Progress bar (fake for radio, just visualization) -->
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400">LIVE</span>
+                                <div class="w-full h-1.5 bg-slate-200 dark:bg-zinc-800 relative overflow-hidden rounded-none">
+                                    <div class="absolute top-0 left-0 h-full w-full bg-primary"></div>
+                                </div>
+                                <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400 relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-none bg-error opacity-75"></span>
+                                <span class="relative inline-flex rounded-none h-2 w-2 bg-error"></span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -182,6 +184,15 @@ const defaultStation = hasStations ? stations[0] : null;
     window.addEventListener('play-station', async (e: any) => {
         const { id, name, category, logo } = e.detail;
         
+        const emptyState = document.getElementById('empty-state-container');
+        const playerContainer = document.getElementById('player-container');
+        
+        if (emptyState) emptyState.classList.add('hidden');
+        if (playerContainer) {
+            playerContainer.classList.remove('hidden');
+            playerContainer.classList.add('flex');
+        }
+
         const titleEl = document.getElementById('now-playing-title');
         const categoryEl = document.getElementById('now-playing-category');
         const logoEl = document.getElementById('now-playing-logo') as HTMLImageElement;
