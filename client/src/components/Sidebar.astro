@@ -2,7 +2,8 @@
 import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp, Sun, Moon, Loader2, AlertCircle } from '@lucide/astro';
 import { fetchStations } from '../hooks/useStations';
 
-const stations = await fetchStations();
+const response = await fetchStations(20, 0);
+const stations = response ? response.stations : [];
 const hasStations = stations.length > 0;
 const defaultStation = hasStations ? stations[0] : null;
 ---
@@ -120,6 +121,8 @@ const defaultStation = hasStations ? stations[0] : null;
 </div>
 
 <script>
+    import { fetchStationById } from '../hooks/useStations';
+
     const btn = document.getElementById('play-pause-btn');
     const audio = document.getElementById('main-audio-player') as HTMLAudioElement;
     
@@ -176,8 +179,8 @@ const defaultStation = hasStations ? stations[0] : null;
     }
 
     // Listen for cross-component play-station events
-    window.addEventListener('play-station', (e: any) => {
-        const { name, category, logo, stream } = e.detail;
+    window.addEventListener('play-station', async (e: any) => {
+        const { id, name, category, logo } = e.detail;
         
         const titleEl = document.getElementById('now-playing-title');
         const categoryEl = document.getElementById('now-playing-category');
@@ -188,10 +191,29 @@ const defaultStation = hasStations ? stations[0] : null;
         if (categoryEl) categoryEl.textContent = category;
         if (logoEl) logoEl.src = logo;
         
-        if (audio && sourceEl) {
-            sourceEl.src = stream;
-            audio.load(); // Required to load the new source
-            audio.play().catch(() => {});
+        // Show loading state while fetching stream url securely
+        if (playIcon) playIcon.classList.add('hidden');
+        if (pauseIcon) pauseIcon.classList.add('hidden');
+        if (loadIcon) loadIcon.classList.remove('hidden');
+        
+        try {
+            const gridEl = document.getElementById('radio-grid');
+            const token = gridEl?.dataset.token || '';
+            
+            const stationInfo = await fetchStationById(id, token);
+            
+            if (stationInfo && audio && sourceEl) {
+                sourceEl.src = stationInfo.stream_url;
+                audio.load(); // Required to load the new source
+                audio.play().catch(() => {});
+            } else {
+                throw new Error("Failed to secure fetch station stream");
+            }
+        } catch (err) {
+            console.error(err);
+            if (loadIcon) loadIcon.classList.add('hidden');
+            if (playIcon) playIcon.classList.remove('hidden');
+            if (errorOverlay) errorOverlay.classList.add('opacity-100');
         }
     });
 </script>
