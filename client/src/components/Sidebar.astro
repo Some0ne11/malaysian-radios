@@ -2,37 +2,39 @@
 import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp, Sun, Moon } from '@lucide/astro';
 ---
 <div class="flex flex-col w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-zinc-800 p-6 lg:p-8 bg-slate-100/90 dark:bg-zinc-900/90 h-full">
-    <div class="mb-6 relative">
-        <div class="absolute top-0 right-0 -mt-2 -mr-2">
-            <!-- Theme Toggle -->
-            <label class="cursor-pointer flex items-center justify-center p-2 text-slate-500 hover:text-primary dark:text-zinc-400 dark:hover:text-primary transition-colors">
-                <input type="checkbox" id="theme-toggle" class="peer sr-only" />
-                <!-- sun icon (shown when checked, meaning light mode) -->
-                <Sun class="w-5 h-5 hidden peer-checked:block" />
-                <!-- moon icon (shown when unchecked, meaning dark mode) -->
-                <Moon class="w-5 h-5 block peer-checked:hidden" />
-            </label>
-        </div>
-        
-        <h2 class="text-xs font-bold tracking-widest text-slate-500 dark:text-zinc-400 uppercase mb-4 flex items-center gap-2">
+    <!-- Sidebar Header / Navbar -->
+    <div class="flex items-center justify-between shrink-0">
+        <h2 class="text-xs font-bold tracking-widest text-slate-500 dark:text-zinc-400 uppercase flex items-center gap-2">
             <span class="w-2 h-2 rounded-none bg-error animate-pulse"></span>
             Now Playing
         </h2>
         
+        <!-- Theme Toggle -->
+        <label class="cursor-pointer flex items-center justify-center p-2 -mr-2 text-slate-500 hover:text-primary dark:text-zinc-400 dark:hover:text-primary transition-colors">
+            <input type="checkbox" id="theme-toggle" class="peer sr-only" />
+            <Sun class="w-5 h-5 hidden peer-checked:block" />
+            <Moon class="w-5 h-5 block peer-checked:hidden" />
+        </label>
+    </div>
+
+    <!-- Centered Content Wrapper -->
+    <div class="flex-1 flex flex-col justify-center">
+        <div class="mb-4 relative">
         <!-- Logo Area -->
         <div class="aspect-square w-full bg-slate-200 dark:bg-zinc-800 rounded-none flex items-center justify-center shadow-inner overflow-hidden relative group">
             <!-- Placeholder logo, in real app this would be an img -->
             <img id="now-playing-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Suria_logo-01.png/1280px-Suria_logo-01.png" alt="Radio Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 dark:from-zinc-900/80 to-transparent"></div>
-            <div class="absolute bottom-4 left-4 right-4">
-                <h3 id="now-playing-title" class="font-bold text-xl text-white truncate drop-shadow-md">SURIA FM</h3>
-                <p id="now-playing-category" class="text-xs text-white/80 uppercase font-semibold">RADIO</p>
-            </div>
         </div>
     </div>
 
+    <!-- Station Info -->
+    <div class="mb-4 text-center">
+        <h3 id="now-playing-title" class="font-bold text-2xl text-slate-900 dark:text-zinc-100 truncate">SURIA FM</h3>
+        <p id="now-playing-category" class="text-xs text-slate-500 dark:text-zinc-400 uppercase font-semibold tracking-widest mt-1">RADIO</p>
+    </div>
+
     <!-- Playback Controls -->
-    <div class="flex-1 flex flex-col justify-center">
+    <div class="flex flex-col mt-2">
         <div class="bg-slate-50 dark:bg-zinc-900 rounded-none p-6 shadow-sm border border-slate-200/50 dark:border-zinc-800/50">
             <audio id="main-audio-player" class="hidden" preload="none" controls>
                 <source src="https://playerservices.streamtheworld.com/api/livestream-redirect/SURIA_FMAAC" type="audio/aac">
@@ -72,9 +74,10 @@ import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp, Sun, Moon 
             </div>
         </div>
     </div>
+    </div>
 
     <!-- Social Links & Mobile Drawer Toggle -->
-    <div class="mt-6 lg:mt-8 flex flex-col items-center gap-4 lg:gap-6 mt-auto lg:mt-8">
+    <div class="flex flex-col items-center gap-4 lg:gap-6 mt-auto">
         <div class="flex justify-center gap-4">
             <!-- SVG icons for social to not overload lucide -->
             <a href="#" class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
