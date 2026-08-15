@@ -21,7 +21,7 @@ export async function fetchToken(): Promise<string | null> {
     const clientSecret = import.meta.env.PUBLIC_CLIENT_SECRET;
     
     try {
-        const url = `${baseUrl.replace(/\/$/, '')}/api/token`;
+        const url = `${baseUrl.replace(/\/$/, '')}/api/token`;  // or /api/token?hmac=clientSecret
         const res = await fetch(url, {
             headers: {
                 'X-Client-Secret': clientSecret
