@@ -48,7 +48,7 @@ malaysian-radios/
 │   │   └── middleware/         # HTTP interceptors (auth.go)
 │   ├── .env                    # Server environment variables (CLIENT_SECRET, SERVER_SECRET)
 │   ├── go.mod                  # Go dependencies
-│   └── database.sql                # Initial database schema and mock data
+│   └── database.sql            # Initial database schema and mock data
 └── README.md
 ```
 
