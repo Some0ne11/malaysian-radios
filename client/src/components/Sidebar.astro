@@ -1,5 +1,5 @@
 ---
-import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp, Sun, Moon } from '@lucide/astro';
+import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp, Sun, Moon, Loader2, AlertCircle } from '@lucide/astro';
 import { fetchStations } from '../hooks/useStations';
 
 const stations = await fetchStations();
@@ -30,6 +30,11 @@ const defaultStation = hasStations ? stations[0] : null;
                 <!-- Logo Area -->
                 <div class="aspect-square w-full bg-slate-200 dark:bg-zinc-800 rounded-none flex items-center justify-center shadow-inner overflow-hidden relative group">
                     <img id="now-playing-logo" src={defaultStation.logo_url} alt="Radio Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <!-- Error Overlay -->
+                    <div id="player-error-overlay" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white opacity-0 pointer-events-none transition-opacity duration-300 z-10">
+                        <AlertCircle class="w-12 h-12 text-error mb-2 animate-pulse" />
+                        <span class="text-sm font-bold tracking-wider uppercase text-error">Stream Error</span>
+                    </div>
                 </div>
                 </div>
 
@@ -54,9 +59,10 @@ const defaultStation = hasStations ? stations[0] : null;
                                 <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
                                     <SkipBack class="w-4 h-4" />
                                 </button>
-                                <button id="play-pause-btn" class="flex items-center justify-center w-14 h-14 rounded-none bg-primary text-white shadow-lg shadow-primary/30 transform transition-transform active:scale-95 hover:bg-primary/90">
-                                    <Play id="play-icon" class="w-6 h-6 ml-1" />
-                                    <Pause id="pause-icon" class="w-6 h-6 hidden" />
+                                <button id="play-pause-btn" class="flex items-center justify-center w-14 h-14 rounded-none bg-primary text-white shadow-lg shadow-primary/30 transform transition-transform active:scale-95 hover:bg-primary/90 relative">
+                                    <Play id="play-icon" class="w-6 h-6 ml-1 absolute" />
+                                    <Pause id="pause-icon" class="w-6 h-6 hidden absolute" />
+                                    <Loader2 id="loading-icon" class="w-6 h-6 hidden animate-spin absolute" />
                                 </button>
                                 <button class="flex items-center justify-center w-8 h-8 rounded-none text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors">
                                     <SkipForward class="w-4 h-4" />
@@ -90,7 +96,6 @@ const defaultStation = hasStations ? stations[0] : null;
         )}
     </div>
 
-
     <!-- Social Links & Mobile Drawer Toggle -->
     <div class="flex flex-col items-center gap-4 lg:gap-6 mt-auto">
         <div class="flex justify-center gap-4">
@@ -115,24 +120,58 @@ const defaultStation = hasStations ? stations[0] : null;
 </div>
 
 <script>
-    // Simple client side script to handle play/pause for the HTML5 audio
     const btn = document.getElementById('play-pause-btn');
     const audio = document.getElementById('main-audio-player') as HTMLAudioElement;
+    
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const loadIcon = document.getElementById('loading-icon');
+    const errorOverlay = document.getElementById('player-error-overlay');
 
     if(btn && audio) {
+        // Toggle play/pause on click
         btn.addEventListener('click', () => {
-            const playIcon = document.getElementById('play-icon');
-            const pauseIcon = document.getElementById('pause-icon');
-            
             if(audio.paused) {
-                audio.play();
-                if(playIcon) playIcon.classList.add('hidden');
-                if(pauseIcon) pauseIcon.classList.remove('hidden');
+                audio.play().catch(() => {}); // Catch error to prevent unhandled rejection in console
             } else {
                 audio.pause();
-                if(playIcon) playIcon.classList.remove('hidden');
-                if(pauseIcon) pauseIcon.classList.add('hidden');
             }
+        });
+
+        // Audio state event listeners for robust UI updates
+        audio.addEventListener('loadstart', () => {
+            if (playIcon) playIcon.classList.add('hidden');
+            if (pauseIcon) pauseIcon.classList.add('hidden');
+            if (loadIcon) loadIcon.classList.remove('hidden');
+            if (errorOverlay) errorOverlay.classList.remove('opacity-100');
+        });
+
+        audio.addEventListener('waiting', () => {
+            if (playIcon) playIcon.classList.add('hidden');
+            if (pauseIcon) pauseIcon.classList.add('hidden');
+            if (loadIcon) loadIcon.classList.remove('hidden');
+        });
+
+        audio.addEventListener('playing', () => {
+            if (playIcon) playIcon.classList.add('hidden');
+            if (loadIcon) loadIcon.classList.add('hidden');
+            if (pauseIcon) pauseIcon.classList.remove('hidden');
+            if (errorOverlay) errorOverlay.classList.remove('opacity-100');
+        });
+
+        audio.addEventListener('pause', () => {
+            if (pauseIcon) pauseIcon.classList.add('hidden');
+            if (loadIcon) loadIcon.classList.add('hidden');
+            if (playIcon) playIcon.classList.remove('hidden');
+        });
+
+        audio.addEventListener('error', () => {
+            // Revert icon to play
+            if (pauseIcon) pauseIcon.classList.add('hidden');
+            if (loadIcon) loadIcon.classList.add('hidden');
+            if (playIcon) playIcon.classList.remove('hidden');
+            // Show error overlay
+            if (errorOverlay) errorOverlay.classList.add('opacity-100');
         });
     }
 
@@ -144,8 +183,6 @@ const defaultStation = hasStations ? stations[0] : null;
         const categoryEl = document.getElementById('now-playing-category');
         const logoEl = document.getElementById('now-playing-logo') as HTMLImageElement;
         const sourceEl = audio?.querySelector('source');
-        const playIcon = document.getElementById('play-icon');
-        const pauseIcon = document.getElementById('pause-icon');
 
         if (titleEl) titleEl.textContent = name;
         if (categoryEl) categoryEl.textContent = category;
@@ -154,10 +191,7 @@ const defaultStation = hasStations ? stations[0] : null;
         if (audio && sourceEl) {
             sourceEl.src = stream;
             audio.load(); // Required to load the new source
-            audio.play();
-            
-            if (playIcon) playIcon.classList.add('hidden');
-            if (pauseIcon) pauseIcon.classList.remove('hidden');
+            audio.play().catch(() => {});
         }
     });
 </script>
