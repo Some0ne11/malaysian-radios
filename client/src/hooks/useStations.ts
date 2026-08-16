@@ -42,7 +42,7 @@ export async function fetchToken(): Promise<string | null> {
     }
 }
 
-export async function fetchStations(limit: number = 20, offset: number = 0): Promise<StationsResponse | null> {
+export async function fetchStations(limit: number = 15, offset: number = 0): Promise<StationsResponse | null> {
     const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
     
     // Always ensure we have a token

@@ -4,8 +4,8 @@ import { ChevronDown } from '@lucide/astro';
 
 import { fetchStations } from '../hooks/useStations';
 
-// Fetch real data from the Go backend via Turso (Initial 20)
-const response = await fetchStations(20, 0);
+// Fetch real data from the Go backend via Turso (Initial 15)
+const response = await fetchStations(15, 0);
 const stations = response ? response.stations : [];
 const initialToken = response ? response.token : '';
 ---
@@ -49,7 +49,7 @@ const initialToken = response ? response.token : '';
         )}
         </div>
         
-        {stations.length === 20 && (
+        {stations.length === 15 && (
             <div id="load-more-trigger" class="w-full h-20 flex items-center justify-center mt-4 text-slate-400">
                 <span class="animate-pulse">Loading more...</span>
             </div>

@@ -96,12 +96,12 @@ go run cmd/token/main.go verify <your_token>
 The Astro frontend is built for maximum speed and SEO, relying heavily on Server-Side Rendering (SSR) for the initial payload and Vanilla JS for client-side interactivity.
 
 1. **Initial SSR Load**:
-   - When a user visits the site, the Astro Node.js server securely fetches the initial token and the first 20 stations *before* rendering the HTML. 
+   - When a user visits the site, the Astro Node.js server securely fetches the initial token and the first 15 stations *before* rendering the HTML. 
    - The initial network requests are completely hidden from the browser.
 
 2. **Lazy Loading (Infinite Scroll)**:
    - The `RadioGrid.astro` component uses a Vanilla JS `IntersectionObserver`. 
-   - As the user scrolls to the bottom of the grid, it dynamically fetches the next 20 stations (`?limit=20&offset=20`) using the active AES-GCM token and injects them into the DOM.
+   - As the user scrolls to the bottom of the grid, it dynamically fetches the next 15 stations (`?limit=15&offset=15`) using the active AES-GCM token and injects them into the DOM.
 
 3. **Background Token Refresh**:
    - To ensure the 1-hour token never expires while the user is actively listening, a background `setInterval` silently requests a fresh token every **55 minutes** (via a lightweight `?limit=0` query).

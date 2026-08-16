@@ -1,7 +1,7 @@
 import { fetchStations } from '../hooks/useStations';
 
-let offset = 20;
-const limit = 20;
+let offset = 15;
+const limit = 15;
 let isLoading = false;
 let hasMore = true;
 

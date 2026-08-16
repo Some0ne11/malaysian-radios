@@ -2,7 +2,7 @@
 import { Play, Pause, SkipBack, SkipForward, Radio, Heart, ChevronUp, Sun, Moon, Loader2, AlertCircle } from '@lucide/astro';
 import { fetchStations } from '../hooks/useStations';
 
-const response = await fetchStations(20, 0);
+const response = await fetchStations(15, 0);
 const stations = response ? response.stations : [];
 const hasStations = stations.length > 0;
 ---
