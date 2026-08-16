@@ -83,7 +83,7 @@ export async function fetchToken(cachedToken?: string | null, forceRefresh: bool
     }
 }
 
-export async function fetchStations(limit: number = 15, offset: number = 0, providedToken?: string | null): Promise<StationsResponse | null> {
+export async function fetchStations(limit: number = 15, offset: number = 0, category: string = 'all', providedToken?: string | null): Promise<StationsResponse | null> {
     const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
     const forceRefresh = limit === 0;
     
@@ -110,7 +110,7 @@ export async function fetchStations(limit: number = 15, offset: number = 0, prov
     }
     
     try {
-        const url = `${baseUrl.replace(/\/$/, '')}/api/stations?limit=${limit}&offset=${offset}`; // or api/stations?limit={limit}&offset={offset}&token={token}
+        const url = `${baseUrl.replace(/\/$/, '')}/api/stations?limit=${limit}&offset=${offset}&category=${encodeURIComponent(category)}`;
         
         const res = await fetch(url, {
             headers: {

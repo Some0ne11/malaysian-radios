@@ -13,7 +13,7 @@ let isBanned = false;
 let response: any = null;
 
 try {
-    response = await fetchStations(15, 0, cookieToken);
+    response = await fetchStations(15, 0, 'all', cookieToken);
 } catch (e: any) {
     if (e.message === "BANNED") {
         isBanned = true;
