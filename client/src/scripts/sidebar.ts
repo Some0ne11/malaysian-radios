@@ -1,4 +1,5 @@
 import { fetchStationById } from '../hooks/useStations';
+import { showToast } from './toast';
 
 const btn = document.getElementById('play-pause-btn');
 const btnPrev = document.getElementById('btn-prev');
@@ -94,9 +95,24 @@ function setVisualizerActive(active: boolean) {
     }
 }
 
+let currentStationId: string | null = null;
+
 // Listen for cross-component play-station events
 window.addEventListener('play-station', async (e: any) => {
     const { id, name, category, logo } = e.detail;
+    
+    // Prevent refetching if the user clicks the station that is already playing
+    if (currentStationId === id) {
+        showToast(`Already playing ${name}`);
+        
+        // If they paused it, resume playing instead of doing a full reload
+        if (audio && audio.paused) {
+            audio.play().catch(() => {});
+        }
+        return;
+    }
+    
+    currentStationId = id;
     
     const emptyState = document.getElementById('empty-state-container');
     const playerContainer = document.getElementById('player-container');
