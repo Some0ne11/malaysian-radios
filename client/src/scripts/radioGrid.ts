@@ -32,7 +32,7 @@ if (trigger && container && gridEl) {
                 
                 res.stations.forEach(station => {
                     const btn = document.createElement('button');
-                    btn.className = "radio-card-btn group relative flex flex-col w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-none overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-primary/50 text-left";
+                    btn.className = "radio-card-btn w-full block relative rounded-none bg-white dark:bg-zinc-900 shadow-sm border border-slate-200 dark:border-zinc-800 hover:shadow-md hover:border-primary/50 transition-all duration-300 group overflow-hidden text-center h-full active:scale-95 flex flex-col items-center";
                     btn.dataset.id = station.id;
                     btn.dataset.name = station.name;
                     btn.dataset.category = station.category_id || 'UNKNOWN';
