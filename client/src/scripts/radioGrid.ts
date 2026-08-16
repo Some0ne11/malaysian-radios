@@ -40,19 +40,19 @@ if (trigger && container && gridEl) {
                     btn.dataset.stream = station.stream_url;
                     
                     btn.innerHTML = `
-                        <div class="relative aspect-square w-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
-                            <img src="${station.logo_url || ''}" alt="${station.name} Logo" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                                <span class="text-xs font-bold tracking-widest text-white uppercase flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-none bg-primary animate-pulse"></span>
-                                    Play
-                                </span>
+                        <!-- Logo -->
+                        <div class="w-full aspect-square bg-slate-100 dark:bg-zinc-800 overflow-hidden relative">
+                            <img src="${station.logo_url || ''}" alt="${station.name} Logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                            <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                            <!-- Play indicator (hidden by default, shown on hover) -->
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
                                 <div class="w-12 h-12 rounded-none bg-primary text-primary-content flex items-center justify-center shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play w-6 h-6 ml-1"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- Info -->
                         <div class="w-full p-4 border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
                             <h3 class="font-bold text-slate-900 dark:text-zinc-100 truncate group-hover:text-primary transition-colors">${station.name}</h3>
                             <p class="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-semibold mt-1">${station.category_id || 'UNKNOWN'}</p>

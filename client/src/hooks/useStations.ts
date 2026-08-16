@@ -14,9 +14,25 @@ export interface StationsResponse {
     stations: Station[];
 }
 
-let activeToken: string | null = null;
+export function obscureToken(token: string): string {
+    // Basic obfuscation to satisfy security by obscurity in DevTools
+    return btoa(token).split('').reverse().join('');
+}
 
-export async function fetchToken(): Promise<string | null> {
+export function deobscureToken(obscured: string): string | null {
+    try {
+        const reversed = obscured.split('').reverse().join('');
+        return atob(reversed);
+    } catch {
+        return null;
+    }
+}
+
+export async function fetchToken(cachedToken?: string | null, forceRefresh: boolean = false): Promise<string | null> {
+    if (cachedToken && !forceRefresh) {
+        return cachedToken;
+    }
+
     const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
     const clientSecret = import.meta.env.PUBLIC_CLIENT_SECRET;
     
@@ -34,7 +50,6 @@ export async function fetchToken(): Promise<string | null> {
         }
         
         const data = await res.json();
-        activeToken = data.token;
         return data.token;
     } catch (error) {
         console.error("Error fetching token:", error);
@@ -42,14 +57,28 @@ export async function fetchToken(): Promise<string | null> {
     }
 }
 
-export async function fetchStations(limit: number = 15, offset: number = 0): Promise<StationsResponse | null> {
+export async function fetchStations(limit: number = 15, offset: number = 0, providedToken?: string | null): Promise<StationsResponse | null> {
     const baseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+    const forceRefresh = limit === 0;
     
-    // Always ensure we have a token
-    const token = await fetchToken();
+    // Client-side auto-cookie reading
+    let tokenToUse = providedToken;
+    if (!tokenToUse && typeof document !== 'undefined') {
+        const match = document.cookie.match(new RegExp('(^| )mr_session=([^;]+)'));
+        if (match) {
+            tokenToUse = deobscureToken(match[2]);
+        }
+    }
+
+    const token = await fetchToken(tokenToUse, forceRefresh);
     if (!token) return null;
+
+    // Client-side auto-cookie writing if we fetched a fresh token
+    if (typeof document !== 'undefined' && token !== tokenToUse) {
+        const obscured = obscureToken(token);
+        document.cookie = `mr_session=${obscured}; max-age=${55 * 60}; path=/; SameSite=Strict`;
+    }
     
-    // If limit is 0, we just wanted to refresh the token
     if (limit === 0) {
         return { token, stations: [] };
     }

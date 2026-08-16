@@ -40,7 +40,7 @@ func initApp() {
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"}, // Adjust in production if needed
 		AllowedMethods: []string{"GET", "POST", "OPTIONS"},
-		AllowedHeaders: []string{"Content-Type", "Authorization"},
+		AllowedHeaders: []string{"Content-Type", "Authorization", "X-Client-Secret"},
 	})
 
 	appHandler = c.Handler(r)

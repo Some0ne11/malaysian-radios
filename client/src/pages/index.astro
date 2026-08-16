@@ -1,6 +1,26 @@
 ---
+export const prerender = false;
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MainCard from '../components/MainCard.astro';
+import { fetchStations, deobscureToken, obscureToken } from '../hooks/useStations';
+
+const cookieVal = Astro.cookies.get('mr_session')?.value;
+const cookieToken = cookieVal ? deobscureToken(cookieVal) : null;
+
+// Pre-fetch data for the page (only once!)
+const response = await fetchStations(15, 0, cookieToken);
+const stations = response ? response.stations : [];
+const initialToken = response ? response.token : '';
+
+if (initialToken && initialToken !== cookieToken) {
+    Astro.cookies.set('mr_session', obscureToken(initialToken), { 
+        maxAge: 55 * 60, 
+        path: '/',
+        httpOnly: false,
+        sameSite: 'lax'
+    });
+}
 ---
 
 <BaseLayout title="Radio Malaysia">
@@ -9,6 +29,6 @@ import MainCard from '../components/MainCard.astro';
         <div class="hidden lg:block absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-none blur-3xl -z-10 animate-pulse"></div>
         <div class="hidden lg:block absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-none blur-3xl -z-10 animate-pulse" style="animation-delay: 2s;"></div>
         
-        <MainCard />
+        <MainCard stations={stations} initialToken={initialToken} />
     </main>
 </BaseLayout>

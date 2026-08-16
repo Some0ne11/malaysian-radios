@@ -1,13 +1,14 @@
 ---
 import RadioCard from './RadioCard.astro';
 import { ChevronDown } from '@lucide/astro';
+import type { Station } from '../hooks/useStations';
 
-import { fetchStations } from '../hooks/useStations';
+export interface Props {
+    stations: Station[];
+    initialToken: string;
+}
 
-// Fetch real data from the Go backend via Turso (Initial 15)
-const response = await fetchStations(15, 0);
-const stations = response ? response.stations : [];
-const initialToken = response ? response.token : '';
+const { stations = [], initialToken = '' } = Astro.props;
 ---
 
 <div id="radio-grid" data-token={initialToken} class="absolute inset-0 lg:static flex-1 flex flex-col bg-white/95 dark:bg-zinc-950/95 backdrop-blur-3xl z-20 max-lg:translate-y-full transition-transform duration-500 ease-in-out w-full lg:w-auto">
