@@ -31,6 +31,8 @@ if (trigger && container && gridEl) {
                 gridEl.dataset.token = res.token; // Update token just in case
                 
                 res.stations.forEach(station => {
+                    const optimizedLogo = station.logo_url ? `/_image?href=${encodeURIComponent(station.logo_url)}&w=400&h=400&f=webp` : '';
+
                     const btn = document.createElement('button');
                     btn.className = "radio-card-btn w-full block relative rounded-none bg-white dark:bg-zinc-900 shadow-sm border border-slate-200 dark:border-zinc-800 hover:shadow-md hover:border-primary/50 transition-all duration-300 group overflow-hidden text-center h-full active:scale-95 flex flex-col items-center";
                     btn.dataset.id = station.id;
@@ -40,9 +42,11 @@ if (trigger && container && gridEl) {
                     btn.dataset.stream = station.stream_url;
                     
                     btn.innerHTML = `
-                        <!-- Logo -->
                         <div class="w-full aspect-square bg-slate-100 dark:bg-zinc-800 overflow-hidden relative">
-                            <img src="${station.logo_url || ''}" alt="${station.name} Logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                            ${optimizedLogo ? 
+                                `<img src="${optimizedLogo}" alt="${station.name} Logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />` 
+                                : `<div class="w-full h-full flex items-center justify-center text-slate-400">No Image</div>`
+                            }
                             <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
                             <!-- Play indicator (hidden by default, shown on hover) -->
                             <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">

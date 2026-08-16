@@ -41,7 +41,7 @@ const hasStations = stations.length > 0;
                     <div class="mb-4 relative">
                         <!-- Logo Area -->
                         <div class="aspect-square w-full bg-slate-200 dark:bg-zinc-800 rounded-none flex items-center justify-center shadow-inner overflow-hidden relative group">
-                            <img id="now-playing-logo" src="" alt="Radio Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <img id="now-playing-logo" src="" alt="Radio Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="eager" decoding="async" />
                             <!-- Error Overlay -->
                             <div id="player-error-overlay" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white opacity-0 pointer-events-none transition-opacity duration-300 z-10">
                                 <AlertCircle class="w-12 h-12 text-error mb-2 animate-pulse" />

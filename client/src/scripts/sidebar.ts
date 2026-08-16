@@ -114,7 +114,10 @@ window.addEventListener('play-station', async (e: any) => {
 
     if (titleEl) titleEl.textContent = name;
     if (categoryEl) categoryEl.textContent = category;
-    if (logoEl) logoEl.src = logo;
+    if (logoEl) {
+        // Dynamically request Astro Image Optimization
+        logoEl.src = logo ? `/_image?href=${encodeURIComponent(logo)}&w=400&h=400&f=webp` : '';
+    }
     
     // Show loading state while fetching stream url securely
     if (playIcon) playIcon.classList.add('hidden');
