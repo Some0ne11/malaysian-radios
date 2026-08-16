@@ -13,6 +13,7 @@ import (
 func GetStationsHandler(w http.ResponseWriter, r *http.Request) {
 	l := r.URL.Query().Get("limit")
 	o := r.URL.Query().Get("offset")
+	c := r.URL.Query().Get("category")
 
 	if l == "" || o == "" {
 		http.Error(w, "Missing required query parameters", http.StatusBadRequest)
@@ -31,7 +32,7 @@ func GetStationsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	stations, err := database.GetStations(limit, offset)
+	stations, err := database.GetStations(limit, offset, c)
 	if err != nil {
 		http.Error(w, "Failed to fetch stations", http.StatusInternalServerError)
 		return
