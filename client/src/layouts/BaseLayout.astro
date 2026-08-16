@@ -15,8 +15,15 @@ const { title = "Radio Malaysia" } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="min-h-screen bg-slate-200 dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-300">
+	<body class="min-h-screen bg-slate-200 dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-300 relative z-0">
 		
+        <!-- Dynamic ambient background -->
+        <div id="ambient-bg-container" class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transition-opacity duration-1000 opacity-0">
+            <img id="ambient-bg-img" src="" alt="" class="w-full h-full object-cover blur-[80px] scale-150 opacity-100 dark:opacity-70 transition-all duration-1000" />
+            <!-- Overlay to ensure text readability -->
+            <div class="absolute inset-0 bg-slate-200/20 dark:bg-zinc-900/40"></div>
+        </div>
+
 		<slot />
 		
 		<Toast />
@@ -39,6 +46,20 @@ const { title = "Radio Malaysia" } = Astro.props;
                 }
             });
         }
+
+        // Ambient Background Logic
+        const ambientContainer = document.getElementById('ambient-bg-container');
+        const ambientImg = document.getElementById('ambient-bg-img') as HTMLImageElement;
+
+        window.addEventListener('play-station', (e: any) => {
+            const logoUrl = e.detail.logo;
+            if (logoUrl && ambientContainer && ambientImg) {
+                // Use Astro's image optimization endpoint for a larger blurred version
+                ambientImg.src = `/_image?href=${encodeURIComponent(logoUrl)}&w=800&h=800&f=webp`;
+                ambientContainer.classList.remove('opacity-0');
+                ambientContainer.classList.add('opacity-100');
+            }
+        });
     </script>
 	</body>
 </html>

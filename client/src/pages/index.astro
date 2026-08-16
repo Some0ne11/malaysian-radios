@@ -35,10 +35,6 @@ if (initialToken && initialToken !== cookieToken) {
 
 <BaseLayout title="Radio Malaysia">
     <main class="flex-1 w-full flex flex-col items-center justify-center p-0 lg:p-8 relative overflow-hidden">
-        <!-- Desktop-only decorative background elements -->
-        <div class="hidden lg:block absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-none blur-3xl -z-10 animate-pulse"></div>
-        <div class="hidden lg:block absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-none blur-3xl -z-10 animate-pulse" style="animation-delay: 2s;"></div>
-        
         <MainCard stations={stations} initialToken={initialToken} isBanned={isBanned} />
     </main>
 </BaseLayout>
