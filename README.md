@@ -66,13 +66,16 @@ The Go backend is designed to protect radio stream URLs and station data from un
 
 1. **Token Generation (`/api/token`)**:
    - The server expects a `X-Client-Secret` header that matches its internal `.env` configuration.
-   - If valid, the server derives a highly secure 32-byte key using `SHA-256(CLIENT_SECRET + SERVER_SECRET)`.
-   - It then generates a JSON payload with a 1-hour expiration timestamp and encrypts it using **AES-GCM**.
-   - This encrypted token is returned to the client.
+   - **Key Derivation:** It dynamically derives a perfectly sized, mathematically secure 32-byte key using `SHA-256(CLIENT_SECRET + SERVER_SECRET)`.
+   - **Payload:** It creates a lightweight JSON payload containing only an expiration timestamp (`{"exp": 1718000000}`), set to exactly 1 hour from generation.
+   - **Encryption (AES-GCM):** It generates a random nonce (number used once) and uses AES in Galois/Counter Mode (GCM) to encrypt the JSON payload. GCM attaches an unforgeable "authentication tag" to the data.
+   - **Encoding:** The random nonce and encrypted data are stitched together and encoded into a URL-safe Base64 string, which becomes the final token.
 
 2. **Route Protection (`TokenAuthMiddleware`)**:
    - All data endpoints (`/api/stations` and `/api/stations/{id}`) are protected by the `TokenAuthMiddleware`.
-   - The middleware intercepts incoming requests, extracts the `Bearer <token>` from the `Authorization` header, and securely decrypts it.
+   - The middleware intercepts incoming requests and extracts the `Bearer <token>`.
+   - **Decryption:** It Base64 decodes the string, slices off the nonce, and attempts to decrypt the remaining data using the server's internal SHA-256 key.
+   - **Validation:** If a malicious user alters even a single character of the token, the GCM authentication tag validation will instantly fail. If decrypted successfully, it parses the JSON and ensures the current time has not surpassed the `exp` timestamp.
    - If the token is missing, tampered with, or expired, the request is instantly rejected with a `401 Unauthorized` status.
 
 ### How the Client Operates
