@@ -68,7 +68,7 @@ The Go backend is designed to protect radio stream URLs and station data from un
    - The server expects a `X-Client-Secret` header that matches its internal `.env` configuration.
    - **Key Derivation:** It dynamically derives a perfectly sized, mathematically secure 32-byte key using `SHA-256(CLIENT_SECRET + SERVER_SECRET)`.
    - **Payload:** It creates a lightweight JSON payload containing only an expiration timestamp (`{"exp": 1718000000}`), set to exactly 1 hour from generation.
-   - **Encryption (AES-GCM):** It generates a random nonce (number used once) and uses AES in Galois/Counter Mode (GCM) to encrypt the JSON payload. GCM attaches an unforgeable "authentication tag" to the data.
+   - **Encryption (AES-GCM):** It generates a random nonce (number used once) and uses AES in Galois/Counter Mode (GCM) to encrypt the JSON payload. The random nonce ensures that even if two tokens are generated at the exact same second with the identical payload, their final encrypted strings will look completely different. GCM also attaches an unforgeable "authentication tag" to the data.
    - **Encoding:** The random nonce and encrypted data are stitched together and encoded into a URL-safe Base64 string, which becomes the final token.
 
 2. **Route Protection (`TokenAuthMiddleware`)**:
