@@ -43,7 +43,7 @@ func isTokenBlocked(token string) bool {
 }
 
 func banToken(token string) {
-	err := database.BlockToken(token, "Spam detected (>3 requests per second)")
+	err := database.BlockToken(token, "Spam detected (>6 requests per second)")
 	if err != nil {
 		log.Printf("Failed to insert blocked token to DB: %v", err)
 	} else {
@@ -71,7 +71,7 @@ func isSpamming(token string) bool {
 	active = append(active, now)
 	tokenRates[token] = active
 
-	return len(active) > 3
+	return len(active) > 6
 }
 
 // TokenAuthMiddleware protects routes by requiring a valid token and enforces rate limits

@@ -79,6 +79,13 @@ The Go backend is designed to protect radio stream URLs and station data from un
    - **Validation:** If a malicious user alters even a single character of the token, the GCM authentication tag validation will instantly fail. If decrypted successfully, it parses the JSON and ensures the current time has not surpassed the `exp` timestamp.
    - If the token is missing, tampered with, or expired, the request is instantly rejected with a `401 Unauthorized` status.
 
+3. **Anti-Spam Rate Limiting (The Ban Hammer)**:
+   - To prevent malicious users or automated scripts from spamming the stream endpoints, the backend employs a strict, memory-efficient rate limiter in the `TokenAuthMiddleware`.
+   - The server maintains a highly concurrent, in-memory map tracking the exact millisecond timestamps of every API hit per token.
+   - **Threshold:** If a single token makes more than 6 requests within a 1-second window, it is instantly flagged for abuse.
+   - **Permanent Ban:** Flagged tokens are permanently written to a `blocked_tokens` table in the SQLite database and pushed into a globally synchronized `blockedTokensCache`.
+   - All subsequent requests using the banned token are instantly rejected with a `403 Forbidden` status using the in-memory cache, requiring zero database queries and protecting server bandwidth.
+
 ### Developer CLI Tool
 To aid in debugging and education, a dedicated CLI utility is provided to manually generate and inspect AES-GCM tokens directly from the terminal. 
 
@@ -116,6 +123,11 @@ The Astro frontend is built for maximum speed and SEO, relying heavily on Server
    - Stream URLs are **not** hardcoded into the HTML buttons.
    - When a user clicks "Play", the client fires a `play-station` event. 
    - The Javascript player intercepts this, securely fetches the exact stream URL from `/api/stations/{id}` using the active token, and directly loads it into the HTML5 `<audio>` tag.
+
+6. **Graceful Ban Handling**:
+   - If the client-side fetchers intercept a `403 BANNED` response from the backend rate limiter, they throw a custom internal error which triggers an instant page reload.
+   - The SSR process natively reads the banned cookie, catches the 403 error on the server side, and conditionally strips out the Radio Grid.
+   - It seamlessly renders an "Access Restricted" overlay directly inside the app layout, instructing the user to wait up to 1 hour (when the background refresher automatically fetches an unbanned token and rescues them).
 
 ---
 
