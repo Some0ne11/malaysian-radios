@@ -95,18 +95,24 @@ go run cmd/token/main.go verify <your_token>
 ### How the Client Operates
 The Astro frontend is built for maximum speed and SEO, relying heavily on Server-Side Rendering (SSR) for the initial payload and Vanilla JS for client-side interactivity.
 
-1. **Initial SSR Load**:
-   - When a user visits the site, the Astro Node.js server securely fetches the initial token and the first 15 stations *before* rendering the HTML. 
-   - The initial network requests are completely hidden from the browser.
+1. **Optimized SSR & Token Persistence**:
+   - The frontend uses cookie-based persistence (`mr_session`) to store the active token across page reloads.
+   - When a user visits the site, `index.astro` intercepts the request. If a valid cookie exists, Astro skips generating a new token and immediately fetches the first 15 stations using the cached token.
+   - If no valid token exists, Astro fetches a fresh token and the first 15 stations, injecting a `Set-Cookie` header into the HTTP response.
+   - This ensures page reloads do not hammer the Go server with redundant token generation requests.
 
-2. **Lazy Loading (Infinite Scroll)**:
+2. **Client-Side Obfuscation**:
+   - The AES-GCM token from the Go server is securely obfuscated before being stored in the browser cookie to prevent casual snooping in DevTools.
+   - **XOR Cipher pipeline:** The raw token is Base64 encoded, reversed entirely, mathematically scrambled using an XOR cipher against the `PUBLIC_CLIENT_SECRET`, and then securely URI/Base64 encoded again to safely fit inside the cookie.
+
+3. **Lazy Loading (Infinite Scroll)**:
    - The `RadioGrid.astro` component uses a Vanilla JS `IntersectionObserver`. 
-   - As the user scrolls to the bottom of the grid, it dynamically fetches the next 15 stations (`?limit=15&offset=15`) using the active AES-GCM token and injects them into the DOM.
+   - As the user scrolls to the bottom of the grid, it dynamically fetches the next 15 stations (`?limit=15&offset=15`) using the cookie-cached AES-GCM token and injects them into the DOM.
 
-3. **Background Token Refresh**:
-   - To ensure the 1-hour token never expires while the user is actively listening, a background `setInterval` silently requests a fresh token every **55 minutes** (via a lightweight `?limit=0` query).
+4. **Background Token Refresh**:
+   - To ensure the 1-hour token never expires while the user is actively listening, a background `setInterval` silently requests a fresh token every **55 minutes**. When successful, it automatically overwrites the `mr_session` cookie.
 
-4. **Secure Playback**:
+5. **Secure Playback**:
    - Stream URLs are **not** hardcoded into the HTML buttons.
    - When a user clicks "Play", the client fires a `play-station` event. 
    - The Javascript player intercepts this, securely fetches the exact stream URL from `/api/stations/{id}` using the active token, and directly loads it into the HTML5 `<audio>` tag.
