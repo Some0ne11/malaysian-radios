@@ -15,14 +15,40 @@ export interface StationsResponse {
 }
 
 export function obscureToken(token: string): string {
-    // Basic obfuscation to satisfy security by obscurity in DevTools
-    return btoa(token).split('').reverse().join('');
+    const secret = import.meta.env.PUBLIC_CLIENT_SECRET;
+    
+    // 1. Another base64 process
+    const b64 = btoa(token);
+    
+    // 2. Reverse string
+    const reversed = b64.split('').reverse().join('');
+    
+    // 3. Scramble against the client_secret
+    const xored = Array.from(reversed).map((char, i) => 
+        String.fromCharCode(char.charCodeAt(0) ^ secret.charCodeAt(i % secret.length))
+    ).join('');
+    
+    // 4. Encode for cookie safety (XOR generates non-printable ASCII which breaks cookies)
+    return btoa(encodeURIComponent(xored));
 }
 
 export function deobscureToken(obscured: string): string | null {
     try {
-        const reversed = obscured.split('').reverse().join('');
-        return atob(reversed);
+        const secret = import.meta.env.PUBLIC_CLIENT_SECRET;
+        
+        // 1. Decode cookie safety
+        const xored = decodeURIComponent(atob(obscured));
+        
+        // 2. Un-scramble the XOR
+        const reversed = Array.from(xored).map((char, i) => 
+            String.fromCharCode(char.charCodeAt(0) ^ secret.charCodeAt(i % secret.length))
+        ).join('');
+        
+        // 3. Un-reverse
+        const b64 = reversed.split('').reverse().join('');
+        
+        // 4. Un-base64
+        return atob(b64);
     } catch {
         return null;
     }
