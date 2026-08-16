@@ -25,11 +25,30 @@ const { stations = [], initialToken = '', isBanned = false } = Astro.props;
           </button>
       </div>
     
-      <div class="flex justify-between items-end">
+      <div class="flex justify-between items-end gap-4">
           <div>
               <h1 class="text-3xl font-black text-slate-900 dark:text-zinc-100 tracking-tight">Discover</h1>
               <p class="text-slate-500 dark:text-zinc-400 mt-1">Listen to your favorite Malaysian radio stations</p>
           </div>
+          <div class="shrink-0 mb-1 hidden sm:block">
+              <select id="category-filter" class="bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 cursor-pointer text-sm">
+                  <option value="all">All Categories</option>
+                  <option value="malay">Malay</option>
+                  <option value="chinese">Chinese</option>
+                  <option value="indian">Indian</option>
+                  <option value="english">English</option>
+              </select>
+          </div>
+      </div>
+      <!-- Mobile Category Filter -->
+      <div class="mt-4 sm:hidden">
+          <select id="category-filter-mobile" class="w-full bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2.5 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 cursor-pointer text-sm">
+              <option value="all">All Categories</option>
+              <option value="malay">Malay</option>
+              <option value="chinese">Chinese</option>
+              <option value="indian">Indian</option>
+              <option value="english">English</option>
+          </select>
       </div>
     </div>
 
