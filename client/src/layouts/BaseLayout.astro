@@ -28,38 +28,6 @@ const { title = "Radio Malaysia" } = Astro.props;
 		
 		<Toast />
 
-    <script>
-        const themeToggle = document.getElementById('theme-toggle') as HTMLInputElement;
-        if (themeToggle) {
-            // Check initial state
-            if (document.documentElement.classList.contains('dark')) {
-                themeToggle.checked = false;
-            } else {
-                themeToggle.checked = true;
-            }
-            themeToggle.addEventListener('change', (e) => {
-                const isLight = (e.target as HTMLInputElement).checked;
-                if (isLight) {
-                    document.documentElement.classList.remove('dark');
-                } else {
-                    document.documentElement.classList.add('dark');
-                }
-            });
-        }
-
-        // Ambient Background Logic
-        const ambientContainer = document.getElementById('ambient-bg-container');
-        const ambientImg = document.getElementById('ambient-bg-img') as HTMLImageElement;
-
-        window.addEventListener('play-station', (e: any) => {
-            const logoUrl = e.detail.logo;
-            if (logoUrl && ambientContainer && ambientImg) {
-                // Use Astro's image optimization endpoint for a larger blurred version
-                ambientImg.src = `/_image?href=${encodeURIComponent(logoUrl)}&w=800&h=800&f=webp`;
-                ambientContainer.classList.remove('opacity-0');
-                ambientContainer.classList.add('opacity-100');
-            }
-        });
-    </script>
+    <script src="../scripts/baseLayout.ts"></script>
 	</body>
 </html>
