@@ -11,7 +11,7 @@ The project features a **Go** backend API backed by a **Turso (LibSQL)** databas
 ### Frontend
 - ![Astro](https://img.shields.io/badge/Astro-0C1127?style=flat&logo=astro&logoColor=white) **Framework:** Astro (Server-Side Rendering + Static HTML)
 - ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white) **Styling:** Tailwind CSS (Vanilla CSS utilities)
-- ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) **Interactivity:** Vanilla JavaScript (No React/Vue overhead)
+- ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white) **Interactivity:** Vanilla TypeScript (No React/Vue overhead)
 - ![Lucide](https://img.shields.io/badge/Lucide-F97316?style=flat&logo=lucide&logoColor=white) **Icons:** Lucide Astro
 
 ### Backend
