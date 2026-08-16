@@ -56,7 +56,7 @@ async function loadStations(isReset = false) {
                 btn.innerHTML = `
                     <div class="w-full aspect-square bg-slate-100 dark:bg-zinc-800 overflow-hidden relative">
                         ${optimizedLogo ? 
-                            `<img src="${optimizedLogo}" alt="${station.name} Logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />` 
+                            `<img src="${optimizedLogo}" alt="${station.name} Logo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="eager" decoding="async" />` 
                             : `<div class="w-full h-full flex items-center justify-center text-slate-400">No Image</div>`
                         }
                         <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
