@@ -33,6 +33,7 @@ malaysian-radios/
 │   │   ├── hooks/              # Data fetching utilities (useStations.ts)
 │   │   ├── layouts/            # Global layouts
 │   │   ├── pages/              # Astro pages (index.astro)
+│   │   ├── scripts/            # Client-side JavaScript/TypeScript logic
 │   │   └── styles/             # Global CSS (global.css)
 │   ├── .env                    # Client environment variables
 │   └── package.json            # Frontend dependencies
