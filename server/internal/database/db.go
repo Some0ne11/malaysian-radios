@@ -43,16 +43,26 @@ func Connect(dbUrl, authToken string) error {
 	return nil
 }
 
-// GetStations fetches a paginated list of radio stations from the database
-func GetStations(limit, offset int) ([]Station, error) {
+// GetStations fetches a paginated list of radio stations from the database, optionally filtered by category
+func GetStations(limit, offset int, category string) ([]Station, error) {
 	if DB == nil {
 		return nil, fmt.Errorf("database connection is not initialized")
 	}
 
 	query := `SELECT id, name, category_id, stream_url, logo_url, status, clear_keys, subscription_type 
-			  FROM stations 
-			  LIMIT ? OFFSET ?`
-	rows, err := DB.Query(query, limit, offset)
+			  FROM stations `
+	
+	var args []interface{}
+	
+	if category != "" && category != "all" {
+		query += `WHERE LOWER(category_id) = LOWER(?) `
+		args = append(args, category)
+	}
+
+	query += `LIMIT ? OFFSET ?`
+	args = append(args, limit, offset)
+
+	rows, err := DB.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
