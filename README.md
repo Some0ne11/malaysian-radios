@@ -41,7 +41,8 @@ malaysian-radios/
 ├── server/                     # Go Backend
 │   ├── api/                    # Vercel serverless function entrypoint (index.go)
 │   ├── cmd/
-│   │   └── server/             # Local application entrypoint (main.go)
+│   │   ├── server/             # Local application entrypoint (main.go)
+│   │   └── token/              # CLI Utility for manual token generation/verification (main.go)
 │   ├── internal/               # Private application and business logic
 │   │   ├── api/
 │   │   │   ├── handler/        # HTTP route handlers (station.go)
@@ -77,6 +78,19 @@ The Go backend is designed to protect radio stream URLs and station data from un
    - **Decryption:** It Base64 decodes the string, slices off the nonce, and attempts to decrypt the remaining data using the server's internal SHA-256 key.
    - **Validation:** If a malicious user alters even a single character of the token, the GCM authentication tag validation will instantly fail. If decrypted successfully, it parses the JSON and ensures the current time has not surpassed the `exp` timestamp.
    - If the token is missing, tampered with, or expired, the request is instantly rejected with a `401 Unauthorized` status.
+
+### Developer CLI Tool
+To aid in debugging and education, a dedicated CLI utility is provided to manually generate and inspect AES-GCM tokens directly from the terminal. 
+
+```bash
+cd server
+
+# Generate a new token and see the step-by-step encryption breakdown
+go run cmd/token/main.go generate
+
+# Decrypt an existing token to view its sliced bytes and JSON payload
+go run cmd/token/main.go verify <your_token>
+```
 
 ### How the Client Operates
 The Astro frontend is built for maximum speed and SEO, relying heavily on Server-Side Rendering (SSR) for the initial payload and Vanilla JS for client-side interactivity.
