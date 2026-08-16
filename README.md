@@ -130,6 +130,7 @@ You need two `.env` files.
 
 **`server/.env`**
 ```env
+PORT=8080
 TURSO_DATABASE_URL=libsql://your-db-url.turso.io
 TURSO_AUTH_TOKEN=your-turso-token
 CLIENT_SECRET=your-client-secret-key-123
