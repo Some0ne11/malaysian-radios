@@ -119,6 +119,9 @@ export async function fetchStations(limit: number = 15, offset: number = 0, prov
         });
         
         if (!res.ok) {
+            if (res.status === 403) {
+                throw new Error("BANNED");
+            }
             console.error(`Failed to fetch stations: ${res.statusText}`);
             return null;
         }
@@ -128,7 +131,10 @@ export async function fetchStations(limit: number = 15, offset: number = 0, prov
             token,
             stations
         };
-    } catch (error) {
+    } catch (error: any) {
+        if (error.message === "BANNED") {
+            throw error;
+        }
         console.error("Error fetching stations:", error);
         return null;
     }
@@ -147,13 +153,19 @@ export async function fetchStationById(id: string, token: string): Promise<Stati
         });
         
         if (!res.ok) {
+            if (res.status === 403) {
+                throw new Error("BANNED");
+            }
             console.error(`Failed to fetch station ${id}: ${res.statusText}`);
             return null;
         }
         
         const data: Station = await res.json();
         return data;
-    } catch (error) {
+    } catch (error: any) {
+        if (error.message === "BANNED") {
+            throw error;
+        }
         console.error(`Error fetching station ${id}:`, error);
         return null;
     }

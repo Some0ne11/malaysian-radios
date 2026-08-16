@@ -154,10 +154,18 @@ window.addEventListener('play-station', async (e: any) => {
     } else {
       throw new Error("Failed to secure fetch station stream");
     }
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    if (err.message === "BANNED") {
+        showToast("Banned for spamming. Please wait 1 hour for a new token.");
+        window.location.reload();
+    } else {
+        console.error(err);
+    }
     if (loadIcon) loadIcon.classList.add('hidden');
     if (playIcon) playIcon.classList.remove('hidden');
     if (errorOverlay) errorOverlay.classList.add('opacity-100');
+        
+    // Reset current ID so they can try clicking it again if it failed
+    currentStationId = null;
   }
 });

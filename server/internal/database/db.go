@@ -120,3 +120,40 @@ func GetStationByID(id string) (*Station, error) {
 
 	return &s, nil
 }
+
+// BlockToken inserts a token into the blocked_tokens table
+func BlockToken(token string, reason string) error {
+	if DB == nil {
+		return fmt.Errorf("database connection is not initialized")
+	}
+
+	query := `INSERT INTO blocked_tokens (token, reason) VALUES (?, ?) ON CONFLICT(token) DO NOTHING`
+	_, err := DB.Exec(query, token, reason)
+	return err
+}
+
+// LoadBlockedTokens fetches all blocked tokens to populate the in-memory cache
+func LoadBlockedTokens() (map[string]bool, error) {
+	if DB == nil {
+		return nil, fmt.Errorf("database connection is not initialized")
+	}
+
+	query := `SELECT token FROM blocked_tokens`
+	rows, err := DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	blocked := make(map[string]bool)
+	for rows.Next() {
+		var token string
+		if err := rows.Scan(&token); err != nil {
+			log.Printf("Error scanning blocked token: %v\n", err)
+			continue
+		}
+		blocked[token] = true
+	}
+
+	return blocked, rows.Err()
+}

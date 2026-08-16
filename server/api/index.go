@@ -5,12 +5,13 @@ import (
 	"net/http"
 	"sync"
 
+	"malaysian-radios-server/internal/api/router"
 	"malaysian-radios-server/internal/config"
 	"malaysian-radios-server/internal/database"
-	"malaysian-radios-server/internal/api/router"
+	"malaysian-radios-server/internal/middleware"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
 )
 
@@ -28,11 +29,14 @@ func initApp() {
 	// Connect to Turso
 	if err := database.Connect(cfg.TursoDBUrl, cfg.TursoAuthToken); err != nil {
 		log.Printf("Failed to connect to database: %v\n", err)
+	} else {
+		// Initialize the blocked tokens cache
+		middleware.InitBlockedTokensCache()
 	}
 
 	// Setup Router using Chi
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	r.Use(chimiddleware.Logger)
 	
 	router.SetupRoutes(r)
 

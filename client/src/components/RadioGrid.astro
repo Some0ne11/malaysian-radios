@@ -6,9 +6,10 @@ import type { Station } from '../hooks/useStations';
 export interface Props {
     stations: Station[];
     initialToken: string;
+    isBanned?: boolean;
 }
 
-const { stations = [], initialToken = '' } = Astro.props;
+const { stations = [], initialToken = '', isBanned = false } = Astro.props;
 ---
 
 <div id="radio-grid" data-token={initialToken} class="absolute inset-0 lg:static flex-1 flex flex-col bg-white/95 dark:bg-zinc-950/95 backdrop-blur-3xl z-20 max-lg:translate-y-full transition-transform duration-500 ease-in-out w-full lg:w-auto">
@@ -33,27 +34,46 @@ const { stations = [], initialToken = '' } = Astro.props;
     </div>
 
     <!-- Scrollable Grid Section -->
-    <div class="flex-1 overflow-y-auto hide-scrollbar p-6 lg:p-8">
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-20 lg:pb-0">
-        {stations.length > 0 ? stations.map(station => (
-            <RadioCard 
-                id={station.id}
-                name={station.name}
-                category={station.category_id || 'UNKNOWN'}
-                logo_url={station.logo_url || ''}
-                stream_url={station.stream_url}
-            />
-        )) : (
-            <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-500 dark:text-zinc-500">
-                <p>No radio stations available at the moment.</p>
+    <div class="flex-1 overflow-y-auto hide-scrollbar p-6 lg:p-8 relative">
+        {isBanned ? (
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-white/50 dark:bg-zinc-950/50 backdrop-blur-sm z-10">
+                <div class="w-20 h-20 mb-6 rounded-full bg-error/10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">Access Restricted</h2>
+                <p class="text-slate-500 dark:text-zinc-400 max-w-md">
+                    We've detected unusual activity from your session. You have been temporarily blocked for spamming requests.
+                </p>
+                <p class="text-error font-medium mt-4">
+                    Please wait up to 1 hour before trying again.
+                </p>
             </div>
-        )}
-        </div>
-        
-        {stations.length === 15 && (
-            <div id="load-more-trigger" class="w-full h-20 flex items-center justify-center mt-4 text-slate-400">
-                <span class="animate-pulse">Loading more...</span>
-            </div>
+        ) : (
+            <>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-20 lg:pb-0">
+                {stations.length > 0 ? stations.map(station => (
+                    <RadioCard 
+                        id={station.id}
+                        name={station.name}
+                        category={station.category_id || 'UNKNOWN'}
+                        logo_url={station.logo_url || ''}
+                        stream_url={station.stream_url}
+                    />
+                )) : (
+                    <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-500 dark:text-zinc-500">
+                        <p>No radio stations available at the moment.</p>
+                    </div>
+                )}
+                </div>
+                
+                {stations.length === 15 && (
+                    <div id="load-more-trigger" class="w-full h-20 flex items-center justify-center mt-4 text-slate-400">
+                        <span class="animate-pulse">Loading more...</span>
+                    </div>
+                )}
+            </>
         )}
     </div>
 </div>

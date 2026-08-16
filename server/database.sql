@@ -10,3 +10,9 @@ CREATE TABLE IF NOT EXISTS stations (
   clear_keys TEXT, -- Store as JSON string, e.g., '[{"keyid": "...", "key": "..."}]'
   subscription_type TEXT DEFAULT 'FREE'
 );
+
+CREATE TABLE IF NOT EXISTS blocked_tokens (
+  token TEXT PRIMARY KEY,
+  blocked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  reason TEXT
+);
