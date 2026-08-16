@@ -110,7 +110,7 @@ export async function fetchStations(limit: number = 15, offset: number = 0, cate
     }
     
     try {
-        const url = `${baseUrl.replace(/\/$/, '')}/api/stations?limit=${limit}&offset=${offset}&category=${encodeURIComponent(category)}`;
+        const url = `${baseUrl.replace(/\/$/, '')}/api/stations?limit=${limit}&offset=${offset}&category=${encodeURIComponent(category)}`; //or ..&categoru={cat}&token={token}
         
         const res = await fetch(url, {
             headers: {
