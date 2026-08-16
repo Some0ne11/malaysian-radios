@@ -38,20 +38,4 @@ const { id, name, category, logo_url, stream_url } = Astro.props;
     </div>
 </button>
 
-<script>
-    document.querySelectorAll('.radio-card-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const el = e.currentTarget as HTMLButtonElement;
-            const event = new CustomEvent('play-station', {
-                detail: {
-                    id: el.dataset.id,
-                    name: el.dataset.name,
-                    category: el.dataset.category,
-                    logo: el.dataset.logo,
-                    stream: el.dataset.stream
-                }
-            });
-            window.dispatchEvent(event);
-        });
-    });
-</script>
+<script src="../scripts/radioCard.ts"></script>
