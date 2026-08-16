@@ -27,27 +27,31 @@ The project features a **Go** backend API backed by a **Turso (LibSQL)** databas
 ```text
 malaysian-radios/
 ├── client/                     # Astro Frontend
-│   ├── public/                 # Static assets
+│   ├── public/                 # Static assets (favicon)
 │   ├── src/
 │   │   ├── components/         # Astro UI Components (Sidebar, RadioGrid, RadioCard)
 │   │   ├── hooks/              # Data fetching utilities (useStations.ts)
 │   │   ├── layouts/            # Global layouts
-│   │   └── pages/              # Astro pages (index.astro)
-│   ├── .env                    # Client environment variables (PUBLIC_API_BASE_URL, PUBLIC_CLIENT_SECRET)
+│   │   ├── pages/              # Astro pages (index.astro)
+│   │   └── styles/             # Global CSS (global.css)
+│   ├── .env                    # Client environment variables
 │   └── package.json            # Frontend dependencies
 │
 ├── server/                     # Go Backend
+│   ├── api/                    # Vercel serverless function entrypoint (index.go)
 │   ├── cmd/
-│   │   └── server/             # Application entrypoint (main.go)
+│   │   └── server/             # Local application entrypoint (main.go)
 │   ├── internal/               # Private application and business logic
 │   │   ├── api/
 │   │   │   ├── handler/        # HTTP route handlers (station.go)
 │   │   │   └── router/         # API routing configuration (routes.go)
+│   │   ├── config/             # Environment variables parser (config.go)
 │   │   ├── crypto/             # AES-GCM token generation and validation (crypto.go)
 │   │   ├── database/           # Turso DB connection and queries (db.go)
 │   │   └── middleware/         # HTTP interceptors (auth.go)
-│   ├── .env                    # Server environment variables (CLIENT_SECRET, SERVER_SECRET)
+│   ├── .env                    # Server environment variables
 │   ├── go.mod                  # Go dependencies
+│   ├── go.sum
 │   └── database.sql            # Initial database schema and mock data
 └── README.md
 ```
