@@ -131,8 +131,13 @@ window.addEventListener('play-station', async (e: any) => {
   if (titleEl) titleEl.textContent = name;
   if (categoryEl) categoryEl.textContent = category;
   if (logoEl) {
-    // Dynamically request Astro Image Optimization
-    logoEl.src = logo ? `/_image?href=${encodeURIComponent(logo)}&w=400&h=400&f=webp` : '';
+    const isProd = import.meta.env.PROD;
+    // Dynamically request Astro/Vercel Image Optimization
+    logoEl.src = logo 
+      ? (isProd
+          ? `/_vercel/image?url=${encodeURIComponent(logo)}&w=640&q=75`
+          : `/_image?href=${encodeURIComponent(logo)}&w=400&h=400&f=webp`)
+      : '';
   }
 
   // Show loading state while fetching stream url securely
