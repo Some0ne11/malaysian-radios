@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
-import netlify from '@astrojs/netlify';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,5 +12,5 @@ export default defineConfig({
     remotePatterns: [{ protocol: 'https' }, { protocol: 'http' }]
   },
   output: 'server',
-  adapter: netlify()
+  adapter: vercel()
 });
