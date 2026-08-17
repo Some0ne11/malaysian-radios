@@ -9,7 +9,11 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   image: {
-    remotePatterns: [{ protocol: 'https' }, { protocol: 'http' }]
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.cloudfront.net' },
+      { protocol: 'https', hostname: 'cloudfront.net' },
+      { protocol: 'https', hostname: 'ik.imagekit.io' }
+    ]
   },
   output: 'server',
   adapter: vercel()
