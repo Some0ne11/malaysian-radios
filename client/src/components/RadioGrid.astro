@@ -30,8 +30,12 @@ const { stations = [], initialToken = '', isBanned = false } = Astro.props;
               <h1 class="text-3xl font-black text-slate-900 dark:text-zinc-100 tracking-tight">Discover</h1>
               <p class="text-slate-500 dark:text-zinc-400 mt-1">Listen to your favorite Malaysian radio stations</p>
           </div>
-          <div class="shrink-0 mb-1 hidden sm:block">
-              <select id="category-filter" class="bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 cursor-pointer text-sm">
+          <div class="shrink-0 mb-1 hidden sm:flex items-center gap-2">
+              <button id="favorites-toggle-desktop" class="flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 text-sm shadow-sm group">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+                  Favorites
+              </button>
+              <select id="category-filter" class="bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 cursor-pointer text-sm shadow-sm">
                   <option value="all">All Categories</option>
                   <option value="malay">Malay</option>
                   <option value="chinese">Chinese</option>
@@ -41,8 +45,11 @@ const { stations = [], initialToken = '', isBanned = false } = Astro.props;
           </div>
       </div>
       <!-- Mobile Category Filter -->
-      <div class="mt-4 sm:hidden">
-          <select id="category-filter-mobile" class="w-full bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2.5 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 cursor-pointer text-sm">
+      <div class="mt-4 flex sm:hidden gap-2">
+          <button id="favorites-toggle-mobile" class="flex-shrink-0 flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2.5 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 text-sm shadow-sm group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+          </button>
+          <select id="category-filter-mobile" class="w-full bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 px-4 py-2.5 rounded-lg font-medium outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-slate-300 dark:border-zinc-700 cursor-pointer text-sm shadow-sm">
               <option value="all">All Categories</option>
               <option value="malay">Malay</option>
               <option value="chinese">Chinese</option>

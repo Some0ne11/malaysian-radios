@@ -1,5 +1,6 @@
 import { fetchStationById } from '../hooks/useStations';
 import { showToast } from './toast';
+import { isFavorite, toggleFavorite } from './favorites';
 
 const btn = document.getElementById('play-pause-btn');
 const btnPrev = document.getElementById('btn-prev');
@@ -96,6 +97,35 @@ function setVisualizerActive(active: boolean) {
 }
 
 let currentStationId: string | null = null;
+let currentStationData: any = null;
+
+const sidebarFavBtn = document.getElementById('sidebar-favorite-btn');
+const sidebarFavIcon = sidebarFavBtn?.querySelector('.heart-icon');
+
+function updateSidebarHeart() {
+  if (!sidebarFavBtn || !sidebarFavIcon || !currentStationId) return;
+  sidebarFavBtn.classList.remove('hidden');
+  
+  if (isFavorite(currentStationId)) {
+    sidebarFavIcon.classList.add('fill-red-500', 'text-red-500');
+  } else {
+    sidebarFavIcon.classList.remove('fill-red-500', 'text-red-500');
+  }
+}
+
+if (sidebarFavBtn) {
+  sidebarFavBtn.addEventListener('click', () => {
+    if (currentStationData) {
+      toggleFavorite(currentStationData);
+    }
+  });
+}
+
+window.addEventListener('favorites-updated', (e: any) => {
+  if (e.detail.id === currentStationId) {
+    updateSidebarHeart();
+  }
+});
 
 // Listen for cross-component play-station events
 window.addEventListener('play-station', async (e: any) => {
@@ -113,6 +143,8 @@ window.addEventListener('play-station', async (e: any) => {
   }
 
   currentStationId = id;
+  currentStationData = { id, name, category, logo };
+  updateSidebarHeart();
 
   const emptyState = document.getElementById('empty-state-container');
   const playerContainer = document.getElementById('player-container');
