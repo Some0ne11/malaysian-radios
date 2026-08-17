@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
@@ -50,12 +51,16 @@ func GetStations(limit, offset int, category string) ([]Station, error) {
 	}
 
 	query := `SELECT id, name, category_id, stream_url, logo_url, status, clear_keys, subscription_type 
-			  FROM stations `
+			  FROM stations WHERE 1=1 `
 	
 	var args []interface{}
+
+	if os.Getenv("DEPLOYMENT_TYPE") == "DEMO" {
+		query += `AND LOWER(status) = 'demo' `
+	}
 	
 	if category != "" && category != "all" {
-		query += `WHERE LOWER(category_id) = LOWER(?) `
+		query += `AND LOWER(category_id) = LOWER(?) `
 		args = append(args, category)
 	}
 
@@ -108,6 +113,11 @@ func GetStationByID(id string) (*Station, error) {
 	query := `SELECT id, name, category_id, stream_url, logo_url, status, clear_keys, subscription_type 
 			  FROM stations 
 			  WHERE id = ?`
+			  
+	if os.Getenv("DEPLOYMENT_TYPE") == "DEMO" {
+		query += ` AND LOWER(status) = 'demo'`
+	}
+	
 	row := DB.QueryRow(query, id)
 
 	var s Station

@@ -11,6 +11,7 @@ type Config struct {
 	Port           string
 	TursoDBUrl     string
 	TursoAuthToken string
+	DeploymentType string
 }
 
 func LoadConfig() *Config {
@@ -25,6 +26,7 @@ func LoadConfig() *Config {
 
 	dbUrl := os.Getenv("TURSO_DATABASE_URL")
 	authToken := os.Getenv("TURSO_AUTH_TOKEN")
+	deploymentType := os.Getenv("DEPLOYMENT_TYPE")
 
 	if dbUrl == "" || authToken == "" {
 		log.Println("Warning: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN environment variables must be set")
@@ -34,5 +36,6 @@ func LoadConfig() *Config {
 		Port:           port,
 		TursoDBUrl:     dbUrl,
 		TursoAuthToken: authToken,
+		DeploymentType: deploymentType,
 	}
 }
