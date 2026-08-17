@@ -43,12 +43,7 @@ async function loadStations(isReset = false) {
             gridEl.dataset.token = res.token; // Update token just in case
             
             res.stations.forEach(station => {
-                const isProd = import.meta.env.PROD;
-                const optimizedLogo = station.logo_url 
-                    ? (isProd 
-                        ? `/_vercel/image?url=${encodeURIComponent(station.logo_url)}&w=640&q=75`
-                        : `/_image?href=${encodeURIComponent(station.logo_url)}&w=400&h=400&f=webp`)
-                    : '';
+                const optimizedLogo = station.logo_url ? `/_image?href=${encodeURIComponent(station.logo_url)}&w=400&h=400&f=webp` : '';
 
                 const btn = document.createElement('button');
                 btn.className = "radio-card-btn w-full block relative rounded-none bg-white dark:bg-zinc-900 shadow-sm border border-slate-200 dark:border-zinc-800 hover:shadow-md hover:border-primary/50 transition-all duration-300 group overflow-hidden text-center h-full active:scale-95 flex flex-col items-center";
