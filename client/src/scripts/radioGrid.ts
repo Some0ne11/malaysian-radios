@@ -24,7 +24,7 @@ setInterval(async () => {
 }, 55 * 60 * 1000);
 
 async function loadStations(isReset = false) {
-    if (!container || !trigger || !gridEl) return;
+    if (!container || !gridEl) return;
     
     if (isLoading || (!hasMore && !isReset)) return;
     
@@ -32,7 +32,7 @@ async function loadStations(isReset = false) {
         offset = 0;
         hasMore = true;
         container.innerHTML = '';
-        trigger.style.display = 'flex';
+        if (trigger) trigger.style.display = 'flex';
     }
     
     isLoading = true;
@@ -100,7 +100,7 @@ async function loadStations(isReset = false) {
             
             if (res.stations.length < limit) {
                 hasMore = false;
-                trigger.style.display = 'none';
+                if (trigger) trigger.style.display = 'none';
             }
         } else {
             if (isReset) {
@@ -111,7 +111,7 @@ async function loadStations(isReset = false) {
                 `;
             }
             hasMore = false;
-            trigger.style.display = 'none';
+            if (trigger) trigger.style.display = 'none';
         }
     } catch (err: any) {
         if (err.message === "BANNED") {
