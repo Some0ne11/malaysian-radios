@@ -1,7 +1,6 @@
 # 📻 Malaysian Radios
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/afba96cd-a4e0-459e-ae0d-c57596791d37/deploy-status)](https://app.netlify.com/projects/malaysian-radios/deploys)
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Site-success?style=flat&logo=netlify)](https://malaysian-radios.netlify.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Site-black?style=flat&logo=vercel)](https://malaysian-radios-hra2.vercel.app/)
 
 A modern, high-performance web application that lets users stream Malaysian radio stations. 
 
