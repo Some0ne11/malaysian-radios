@@ -75,16 +75,12 @@ function setDominantColor(imageSrc: string) {
 window.addEventListener('play-station', (e: any) => {
     const logoUrl = e.detail.logo;
     if (logoUrl && ambientContainer && ambientImg) {
-        // Use Astro's image optimization endpoint for a larger blurred version
-        const optimizedUrl = `/_image?href=${encodeURIComponent(logoUrl)}&w=800&h=800&f=webp`;
-            
-        ambientImg.src = optimizedUrl;
+        // Use the raw image URL to avoid CORS blocks on the proxy
+        ambientImg.src = logoUrl;
         ambientContainer.classList.remove('opacity-0');
         ambientContainer.classList.add('opacity-100');
         
-        // Extract accent color using a tiny optimized version (safe from CORS)
-        const tinyUrl = `/_image?href=${encodeURIComponent(logoUrl)}&w=50&h=50&f=webp`;
-            
-        setDominantColor(tinyUrl);
+        // Extract accent color using the raw image
+        setDominantColor(logoUrl);
     }
 });

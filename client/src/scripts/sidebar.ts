@@ -131,8 +131,7 @@ window.addEventListener('play-station', async (e: any) => {
   if (titleEl) titleEl.textContent = name;
   if (categoryEl) categoryEl.textContent = category;
   if (logoEl) {
-    // Dynamically request Astro Image Optimization
-    logoEl.src = logo ? `/_image?href=${encodeURIComponent(logo)}&w=400&h=400&f=webp` : '';
+    logoEl.src = logo || '';
   }
 
   // Show loading state while fetching stream url securely
@@ -156,15 +155,15 @@ window.addEventListener('play-station', async (e: any) => {
     }
   } catch (err: any) {
     if (err.message === "BANNED") {
-        showToast("Banned for spamming. Please wait 1 hour for a new token.");
-        window.location.reload();
+      showToast("Banned for spamming. Please wait 1 hour for a new token.");
+      window.location.reload();
     } else {
-        console.error(err);
+      console.error(err);
     }
     if (loadIcon) loadIcon.classList.add('hidden');
     if (playIcon) playIcon.classList.remove('hidden');
     if (errorOverlay) errorOverlay.classList.add('opacity-100');
-        
+
     // Reset current ID so they can try clicking it again if it failed
     currentStationId = null;
   }

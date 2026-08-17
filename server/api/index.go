@@ -37,7 +37,7 @@ func initApp() {
 	// Setup Router using Chi
 	r := chi.NewRouter()
 	r.Use(chimiddleware.Logger)
-	
+
 	router.SetupRoutes(r)
 
 	// Setup CORS to allow the frontend to access the API
