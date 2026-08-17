@@ -12,5 +12,7 @@ export default defineConfig({
     remotePatterns: [{ protocol: 'https' }, { protocol: 'http' }]
   },
   output: 'server',
-  adapter: netlify()
+  adapter: netlify({
+    imageCDN: false,
+  })
 });
