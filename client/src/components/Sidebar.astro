@@ -64,7 +64,7 @@ const hasStations = stations.length > 0;
                     <!-- Playback Controls -->
                     <div class="flex flex-col mt-2">
                         <div class="bg-slate-50 dark:bg-zinc-900 rounded-none p-6 shadow-sm border border-slate-200/50 dark:border-zinc-800/50">
-                            <audio id="main-audio-player" class="hidden" preload="none" controls>
+                            <audio id="main-audio-player" class="w-0 h-0 absolute opacity-0 pointer-events-none" preload="none" controls playsinline>
                                 <source src="">
                             </audio>
                             <div class="flex items-center justify-center mb-4">

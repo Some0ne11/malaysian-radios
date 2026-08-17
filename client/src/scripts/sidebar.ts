@@ -166,6 +166,31 @@ window.addEventListener('play-station', async (e: any) => {
     logoEl.src = logo || '';
   }
 
+  // Update Media Session API for background/lockscreen playback
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: name,
+      artist: 'Malaysian Radios',
+      album: category,
+      artwork: [
+        { src: logo || '', sizes: '512x512', type: 'image/png' },
+      ]
+    });
+
+    navigator.mediaSession.setActionHandler('play', () => {
+      if (audio) audio.play().catch(() => {});
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      if (audio) audio.pause();
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      window.dispatchEvent(new CustomEvent('request-play-prev'));
+    });
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      window.dispatchEvent(new CustomEvent('request-play-next'));
+    });
+  }
+
   // Show loading state while fetching stream url securely
   if (playIcon) playIcon.classList.add('hidden');
   if (pauseIcon) pauseIcon.classList.add('hidden');
@@ -173,6 +198,7 @@ window.addEventListener('play-station', async (e: any) => {
   setVisualizerActive(false);
 
   try {
+
     const gridEl = document.getElementById('radio-grid');
     const token = gridEl?.dataset.token || '';
 
