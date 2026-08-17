@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Toast from '../components/Toast.astro';
+import DemoDisclaimer from '../components/DemoDisclaimer.astro';
 
 const { title = "Radio Malaysia" } = Astro.props;
 ---
@@ -27,6 +28,7 @@ const { title = "Radio Malaysia" } = Astro.props;
 		<slot />
 		
 		<Toast />
+        <DemoDisclaimer />
 
     <script src="../scripts/baseLayout.ts"></script>
 	</body>
