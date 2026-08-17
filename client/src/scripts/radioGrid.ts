@@ -175,6 +175,7 @@ function renderCards(stationsList: any[], isFavData: boolean) {
         `;
         
         btn.addEventListener('click', (e) => {
+            if ((e.target as HTMLElement).closest('.favorite-btn')) return;
             const el = e.currentTarget as HTMLButtonElement;
             const event = new CustomEvent('play-station', {
                 detail: {
@@ -278,6 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Sync hearts when favorites change globally
 window.addEventListener('favorites-updated', () => {
     syncHeartIcons();
+    if (currentCategory === 'favorites') {
+        loadStations(true);
+    }
 });
 
 function syncHeartIcons() {
