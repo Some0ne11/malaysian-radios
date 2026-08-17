@@ -1,5 +1,7 @@
 # 📻 Malaysian Radios
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/afba96cd-a4e0-459e-ae0d-c57596791d37/deploy-status)](https://app.netlify.com/projects/malaysian-radios/deploys)
+
 A modern, high-performance web application that lets users stream Malaysian radio stations. 
 
 The project features a **Go** backend API backed by a **Turso (LibSQL)** database, and an **Astro** frontend built with Vanilla JS and Tailwind CSS for blazing-fast performance. Security is a first-class citizen, featuring an AES-GCM encrypted token-based authentication system.
