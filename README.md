@@ -9,7 +9,6 @@
   <summary><b>Disclaimer</b></summary> 
     <i>The radio stations shown in the preview image are merely placeholders. This repository does not host, provide, or contain any radio streams or copyrighted media. Users must provide their own stream URLs and insert them into their database.</i>
 </div>
-    <br/>
 </details>
 
 A modern, high-performance web application that lets users stream Malaysian radio stations. 
