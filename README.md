@@ -2,6 +2,10 @@
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Site-black?style=flat&logo=vercel)](https://malaysian-radios-hra2.vercel.app/)
 
+<div align="center">
+  <img src="client/public/malaysian-radio-preview.png" alt="Malaysian Radios Preview" width="100%" />
+</div>
+
 A modern, high-performance web application that lets users stream Malaysian radio stations. 
 
 The project features a **Go** backend API backed by a **Turso (LibSQL)** database, and an **Astro** frontend built with Vanilla JS and Tailwind CSS for blazing-fast performance. Security is a first-class citizen, featuring an AES-GCM encrypted token-based authentication system.
